@@ -1,0 +1,8 @@
+
+*.o
+
+*.layout
+
+Client/bin/Debug/client
+
+Server/bin/Debug/server
