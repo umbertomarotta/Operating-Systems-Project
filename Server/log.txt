@@ -1,0 +1,15 @@
+[ INFO @ Sun 2014-08-24 21:38:24 CEST ]: Server initalized. 
+[ INFO @ Sun 2014-08-24 21:38:32 CEST ]: Server initalized. 
+[ INFO @ Sun 2014-08-24 21:39:15 CEST ]: New thread created 
+[ INFO @ Sun 2014-08-24 21:39:17 CEST ]: Serving the registration form. 
+[ INFO @ Sun 2014-08-24 21:39:26 CEST - User: cazzo ]: New user created. 
+[ INFO @ Sun 2014-08-24 21:39:26 CEST - User: cazzo ]: User logged in. 
+[ INFO @ Sun 2014-08-24 21:42:26 CEST ]: Server initalized. 
+[ INFO @ Sun 2014-08-24 21:42:33 CEST ]: New thread created 
+[ INFO @ Sun 2014-08-24 21:42:34 CEST ]: Serving the registration form. 
+[ INFO @ Sun 2014-08-24 21:42:39 CEST - User: sdfhug ]: New user created. 
+[ INFO @ Sun 2014-08-24 21:42:39 CEST - User: sdfhug ]: User logged in. 
+[ INFO @ Sun 2014-08-24 21:42:57 CEST ]: New thread created 
+[ INFO @ Sun 2014-08-24 21:42:58 CEST ]: Serving the registration form. 
+[ INFO @ Sun 2014-08-24 21:43:12 CEST - User: sfdush ]: New user created. 
+[ INFO @ Sun 2014-08-24 21:43:12 CEST - User: sfdush ]: User logged in. 

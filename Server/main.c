@@ -15,14 +15,11 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <signal.h>
-#include "library.h"
+#include "lib.h"
 
 // define externed vars
 pthread_mutex_t users_mutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t map_mutex = PTHREAD_MUTEX_INITIALIZER;
 UserList Users;
-MapList map[MAXMAP][MAXMAP];
-MessageList checkingMessages;
 int logfile;
 User SERVER;
 
@@ -89,7 +86,7 @@ int main(int argc, const char * argv[]) {
         logfile = open("log.txt",O_RDWR|O_CREAT|O_APPEND,S_IRUSR|S_IWUSR);
     }
     
-    printf("Server: initialization \n");
+    //printf("Server: initialization \n");
     server_socket = socket(AF_INET, SOCK_STREAM, 0);
     if (server_socket == -1) {
         perror("Opening server socket: ");
@@ -113,10 +110,10 @@ int main(int argc, const char * argv[]) {
     }
     
     listen(server_socket, 1);
-    _info("Server listening and waiting connections.");
-    printf("Server: waiting connection \n");
+    //_info("Server listening and waiting connections.");
+    //printf("Server: waiting connection \n");
     
-    SERVER = (User)malloc(sizeof(struct UserType));
+    SERVER = (User)malloc(sizeof(struct User));
     SERVER->username = "SERVER";
     
     // Ignore SIGPIPE is always good
@@ -124,14 +121,6 @@ int main(int argc, const char * argv[]) {
     
     client_addr_len = sizeof(client);
     
-    int x = 0, y = 0;
-    for (x = 0; x < 256; x++) {
-        for (y = 0; y < 256; y++) {
-            map[x][y] = (MapList)malloc(sizeof(struct MapListType));
-            map[x][y]->messages = None;
-            map[x][y]->users = None;
-        }
-    }
     
     // Socket loop
     while (1) {
