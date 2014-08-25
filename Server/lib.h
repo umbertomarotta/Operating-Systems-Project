@@ -36,9 +36,9 @@ struct UserList{
 };
 
 struct Film{
-    char *title;
-    char *year;
-    char *genre;
+    char title[33];
+    char year[17];
+    char genre[17];
     float f_average;
     F_ValutationList film_valutations;
 };
@@ -72,10 +72,10 @@ struct C_ValutationList{
 };
 
 extern UserList Users;
+extern FilmList Films;
 extern pthread_mutex_t users_mutex;
 extern pthread_mutex_t userdb_mutex;
-
-extern pthread_mutex_t film_mutex;
+extern pthread_mutex_t filmdb_mutex;
 extern const char hello[MAXBUF];
 extern const char menu[MAXBUF];
 extern int logfile;
@@ -88,9 +88,11 @@ int _info(char *buffer);
 int _error(char *buffer);
 void manage_user(int fd, int registration);
 User find_username(UserList U, char *new_user);
-UserList add_to(UserList U, User new_user);
+UserList U_add_to(UserList U, User new_user);
 UserList remove_from(UserList U, User user);
 void show_online_users(User user);
-
+void F_add_to(Film new_film);
+void show_film(User user);
+void add_film(User user);
 
 #endif

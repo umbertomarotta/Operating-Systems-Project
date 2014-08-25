@@ -21,14 +21,39 @@
 // define externed vars
 pthread_mutex_t users_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t userdb_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t filmdb_mutex = PTHREAD_MUTEX_INITIALIZER;
 UserList Users = NULL;
-UserList Users;
+FilmList Films = NULL;
 int logfile;
 User SERVER;
 
 // Static strings
-const char menu[MAXBUF] = "\n 1. Visualizza utenti online \n 2. Invia msg pubblico \n 3. Invia msg privato \n 4. Leggi msg pubblici \n 5. Leggi msg privati \n 6. Muovi \n 7. Leggi notifiche \n 8. Esci \n > ";
+const char menu[MAXBUF] = "\n 1. Visualizza utenti online \n 2. Visualizza elenco film \n 3. Aggiungi film \n 4. Esci \n > ";
 const char hello[MAXBUF] = "\n## MESSAGE SYSTEM ## \n 1. Registrazione \n 2. Login \n 3. Esci \n > ";
+
+void filmdb_init(){
+    struct Film f;
+    FilmList ptr = Films;
+    int filmfile = open("filmdb", O_RDWR|O_CREAT,S_IRUSR|S_IWUSR);
+    while(read(filmfile, &f, sizeof(struct Film))){
+        /*if(Films == NULL) {
+            Films = (FilmList)malloc(sizeof(struct FilmList));
+            Films->film = (Film)malloc(sizeof(struct Film));
+            memcpy(Films->film, &f, sizeof(struct Film));
+            Films->next=NULL;
+        } else {
+            FilmList N = (FilmList)malloc(sizeof(struct FilmList));
+            N->film = (Film)malloc(sizeof(struct Film));
+            memcpy(N->film, &f, sizeof(struct Film));
+            N->next=Films;
+            Films=N;
+        }*/
+        Film new_film = (Film)malloc(sizeof(struct Film));
+        memcpy(new_film, &f, sizeof(struct Film));
+        F_add_to(new_film);
+    }
+    close(filmfile);
+}
 
 void userdb_init(){
     struct User u;
@@ -109,6 +134,7 @@ int main() {
         retcode,
         fd;
     userdb_init();
+    filmdb_init();
     pthread_t tid;
     struct sockaddr_in server_addr, client;
     if (argc < 2) {

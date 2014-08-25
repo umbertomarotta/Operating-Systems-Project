@@ -137,7 +137,7 @@ void manage_user(int fd, int registration) {
         strcat(notif, menu);
         _send(user->fd, notif);
         _recv(user->fd, buffer, 1);
-        while (atoi(buffer) <= 0 || atoi(buffer) > 8) {
+        while (atoi(buffer) <= 0 || atoi(buffer) > 4) {
             _send(user->fd, " > ");
             _recv(user->fd, buffer, 1);
         }
@@ -147,15 +147,15 @@ void manage_user(int fd, int registration) {
                 show_online_users(user);
             }
                 break;
-            /*case 2: {
-                send_public_message(user);
+            case 2: {
+                show_film(user);
             }
                 break;
             case 3: {
-                send_private_message(user);
+                add_film(user);
             }
                 break;
-            case 4: {
+            /*case 4: {
                 read_public_messages(user);
                 break;
             }
@@ -178,7 +178,7 @@ void manage_user(int fd, int registration) {
             default:
                 break;
         }
-    } while (choice > 0 && choice < 8);
+    } while (choice > 0 && choice < 4);
     user->is_on=0;
 }
 
@@ -236,7 +236,7 @@ User find_username(UserList U, char *new_user){
     }
 }
 
-UserList add_to(UserList U, User new_user) {
+UserList U_add_to(UserList U, User new_user) {
     if (U == NULL) {
         U = (UserList)malloc(sizeof(struct UserList));
         U->user = new_user;
@@ -248,6 +248,64 @@ UserList add_to(UserList U, User new_user) {
         N->next = U;
         return N;
     }
+}
+
+void add_film(User u){
+    char buffer[MAXBUF];
+    Film new_film = (Film)malloc(sizeof(struct Film));
+    _send(u->fd, " > Insert title: ");
+    _recv(u->fd, buffer, 1);
+    strcpy(new_film->title, buffer);
+    _send(u->fd, " > Insert year: ");
+    _recv(u->fd, buffer, 1);
+    strcpy(new_film->year, buffer);
+    _send(u->fd, " > Insert genre: ");
+    _recv(u->fd, buffer, 1);
+    strcpy(new_film->genre, buffer);
+    new_film->f_average=0;
+    new_film->film_valutations=NULL;
+    F_add_to(new_film);
+    pthread_mutex_lock(&filmdb_mutex);
+    int filmfile=open("filmdb", O_RDWR|O_CREAT|O_APPEND|O_TRUNC,S_IRUSR,S_IWUSR);
+    FilmList ptr=Films;
+    while(ptr!=NULL){
+        write(filmfile, ptr->film, sizeof(struct Film));
+        ptr=ptr->next;
+    }
+    close(filmfile);
+    pthread_mutex_unlock(&filmdb_mutex);
+}
+
+void F_add_to(Film new_film){
+    FilmList F=Films;
+    if(F==NULL){
+        F = (FilmList)malloc(sizeof(struct FilmList));
+        F->film = new_film;
+        F->next = NULL;
+        Films=F;
+    }else{
+        FilmList aux = (FilmList)malloc(sizeof(struct FilmList));
+        aux->film=new_film;
+        aux->next=NULL;
+        if(strcmp(new_film->title, F->film->title)<0){
+            aux->next=Films;
+            Films=aux;
+        }else{        
+            FilmList temp=Films->next;
+            FilmList pred=Films;
+            while(temp!=NULL && strcmp(new_film->title, F->film->title)>0){
+                pred=temp;
+                temp=temp->next;
+            }
+            if(temp==NULL)
+                pred->next=aux;
+            else{
+                aux->next = temp;
+                pred->next=aux;
+            }
+        }
+    }
+    return;
 }
 
 UserList remove_from(UserList U, User user) {
@@ -278,3 +336,19 @@ void show_online_users(User user){
     _send(user->fd, buffer);
 }
 
+void show_film(User u){
+    FilmList f = Films;
+    char buffer[MAXBUF];
+    char aux[129];
+    memset(buffer, '\0', MAXBUF);
+    sprintf(buffer, "\n ## ELENCO FILM ##\n");
+    _send(u->fd, buffer);
+    while(f != NULL){
+        sprintf(buffer, " > [%s] %s (%s)\n", f->film->year, f->film->title, f->film->genre);
+        _send(u->fd, buffer);
+        //_recv(u->fd, buffer, 1);
+        //strcat(buffer, aux);
+        f=f->next;
+    }
+    //_send(u->fd, buffer);
+}
