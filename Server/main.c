@@ -28,7 +28,7 @@ User SERVER;
 
 // Static strings
 const char menu[MAXBUF] = "\n 1. Visualizza utenti online \n 2. Invia msg pubblico \n 3. Invia msg privato \n 4. Leggi msg pubblici \n 5. Leggi msg privati \n 6. Muovi \n 7. Leggi notifiche \n 8. Esci \n > ";
-const char hello[MAXBUF] = "\n## MESSAGE SYSTEM ## \n 1. Registrazione \n 2. Esci \n > ";
+const char hello[MAXBUF] = "\n## MESSAGE SYSTEM ## \n 1. Registrazione \n 2. Login \n 3. Esci \n > ";
 
 void userdb_init(){
     struct User u;
@@ -75,7 +75,12 @@ void *manage(void *arg) {
                 manage_user(fd, 1);
             }
                 break;
-            case 2:
+            case 2: 
+                {
+                manage_user(fd, 0);
+                }
+                break;
+            case 3:
                 close(fd);
                 pthread_exit(0);
             default:
@@ -105,7 +110,6 @@ int main() {
         fd;
     userdb_init();
     pthread_t tid;
-
     struct sockaddr_in server_addr, client;
     if (argc < 2) {
         printf("Usage:\n%s port [file_logging]\n", argv[0]);

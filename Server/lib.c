@@ -102,14 +102,28 @@ void manage_user(int fd, int registration) {
         }
         pthread_mutex_unlock(&users_mutex);
         _infoUser("New user created.", user->username);
+        int userfile = open("userdb", O_RDWR | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR);
+        pthread_mutex_lock(&userdb_mutex);
+        write(userfile, user, sizeof(struct User));
+        close(userfile);
+        pthread_mutex_unlock(&userdb_mutex);
+    }
+    //Login BLOCK
+    else if(registration==0){
+
+        do{
+            _send(fd, " > Username: ");
+            _recv(fd, buffer, 1);
+            user=find_username(Users,buffer);
+            if(!user) _error("User doesn't exist");
+            _send(fd, " > Password: ");
+            _recv(fd, buffer, 1);
+        }while(user!=NULL && strcmp(user->password, buffer)!=0);
     }
     assert(user != NULL);
-     int userfile = open("userdb", O_RDWR | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR);
-    user->is_on=1;
-    pthread_mutex_lock(&userdb_mutex);
-    write(userfile, user, sizeof(struct User));
-    pthread_mutex_unlock(&userdb_mutex);
     _infoUser("User logged in.", user->username);
+    user->is_on=1;
+    user->fd=fd;
     int choice;
     do {
         memset(buffer, 0, MAXBUF);
