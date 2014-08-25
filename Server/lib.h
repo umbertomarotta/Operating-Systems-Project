@@ -14,17 +14,21 @@ typedef struct C_Valutation* C_Valutation;
 typedef struct C_ValutationList* C_ValutationList;
 
 
+
 struct User{
-    char *username;
-    char *name;
-    char *surname;
-    char *password;
+    char username[65];
+    char name[65];
+    char surname[65];
+    char password[65];
     int fd;
     int noti_count;
     int avg_count;
     int part_avg;
     float u_average;
+    int is_on;
 };
+
+
 
 struct UserList{
     User user;
@@ -69,6 +73,7 @@ struct C_ValutationList{
 
 extern UserList Users;
 extern pthread_mutex_t users_mutex;
+extern pthread_mutex_t userdb_mutex;
 
 extern pthread_mutex_t film_mutex;
 extern const char hello[MAXBUF];
@@ -83,5 +88,9 @@ int _info(char *buffer);
 int _error(char *buffer);
 void manage_user(int fd, int registration);
 User find_username(UserList U, char *new_user);
+UserList add_to(UserList U, User new_user);
+UserList remove_from(UserList U, User user);
+void show_online_users(User user);
+
 
 #endif

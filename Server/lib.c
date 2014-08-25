@@ -52,7 +52,7 @@ void manage_user(int fd, int registration) {
             _error("Registration task was interrupted by user..");
             return;
         }
-        new_user->name = (char*)malloc(sizeof(char)*strlen(buffer));
+        //new_user->name = (char*)malloc(sizeof(char)*strlen(buffer));
         strcpy(new_user->name, buffer);
         
         _send(fd, " > Cognome: ");
@@ -61,7 +61,7 @@ void manage_user(int fd, int registration) {
             _error("Registration task was interrupted by user..");
             return;
         }
-        new_user->surname = (char*)malloc(strlen(buffer)*sizeof(char));
+        //new_user->surname = (char*)malloc(strlen(buffer)*sizeof(char));
         strcpy(new_user->surname, buffer);
         
         do{
@@ -71,7 +71,7 @@ void manage_user(int fd, int registration) {
                 _error("Registration task was interrupted by user..");
                 return;
             }
-            new_user->username = (char*)malloc(sizeof(char)*strlen(buffer));
+            //new_user->username = (char*)malloc(sizeof(char)*strlen(buffer));
             strcpy(new_user->username, buffer);
         } while (find_username(Users, buffer) != NULL);
 
@@ -82,7 +82,7 @@ void manage_user(int fd, int registration) {
             _error("Registration task was interrupted by user..");
             return;
         }
-        new_user->password = (char*)malloc(sizeof(char)*strlen(buffer));
+        //new_user->password = (char*)malloc(sizeof(char)*strlen(buffer));
         strcpy(new_user->password, buffer);
 
         
@@ -104,6 +104,11 @@ void manage_user(int fd, int registration) {
         _infoUser("New user created.", user->username);
     }
     assert(user != NULL);
+     int userfile = open("userdb", O_RDWR | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR);
+    user->is_on=1;
+    pthread_mutex_lock(&userdb_mutex);
+    write(userfile, user, sizeof(struct User));
+    pthread_mutex_unlock(&userdb_mutex);
     _infoUser("User logged in.", user->username);
     int choice;
     do {
@@ -123,12 +128,12 @@ void manage_user(int fd, int registration) {
             _recv(user->fd, buffer, 1);
         }
         choice = atoi(buffer);
-        /*switch (choice) {
+        switch (choice) {
             case 1: {
-                show_users_available(user);
+                show_online_users(user);
             }
                 break;
-            case 2: {
+            /*case 2: {
                 send_public_message(user);
             }
                 break;
@@ -155,11 +160,12 @@ void manage_user(int fd, int registration) {
                 break;
             case 8: {
                 return;
-            }
+            }*/
             default:
                 break;
-        }*/
+        }
     } while (choice > 0 && choice < 8);
+    user->is_on=0;
 }
 
 
@@ -215,3 +221,46 @@ User find_username(UserList U, char *new_user){
         }
     }
 }
+
+UserList add_to(UserList U, User new_user) {
+    if (U == NULL) {
+        U = (UserList)malloc(sizeof(struct UserList));
+        U->user = new_user;
+        U->next = NULL;
+        return U;
+    } else {
+        UserList N = (UserList)malloc(sizeof(struct UserList));
+        N->user = new_user;
+        N->next = U;
+        return N;
+    }
+}
+
+UserList remove_from(UserList U, User user) {
+    if (U != NULL) {
+        if (U->user == user) {
+            return U->next;  // Will not free the user on purpose
+        }
+        U->next = remove_from(U->next, user);
+        return U;
+    }
+    return NULL;
+}
+
+void show_online_users(User user){
+    UserList u = Users;
+    char buffer[MAXBUF];
+    char aux[121];
+    memset(buffer, '\0', MAXBUF);
+    sprintf(buffer, "\n## ONLINE USERS ##\n");
+    while(u != NULL){
+        if(u->user->is_on == 1){
+            sprintf(aux, " > %s\n", u->user->username);
+            strcat(buffer, aux);
+            
+        }
+        u=u->next;
+    }
+    _send(user->fd, buffer);
+}
+

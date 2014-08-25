@@ -13,3 +13,26 @@
 [ INFO @ Sun 2014-08-24 21:42:58 CEST ]: Serving the registration form. 
 [ INFO @ Sun 2014-08-24 21:43:12 CEST - User: sfdush ]: New user created. 
 [ INFO @ Sun 2014-08-24 21:43:12 CEST - User: sfdush ]: User logged in. 
+[ INFO @ Mon 2014-08-25 16:29:59 CEST ]: Server initalized. 
+[ INFO @ Mon 2014-08-25 16:30:37 CEST ]: New thread created 
+[ INFO @ Mon 2014-08-25 16:30:40 CEST ]: Serving the registration form. 
+[ INFO @ Mon 2014-08-25 16:30:44 CEST - User: bsgbfg ]: New user created. 
+[ INFO @ Mon 2014-08-25 16:30:44 CEST - User: bsgbfg ]: User logged in. 
+[ INFO @ Mon 2014-08-25 16:30:56 CEST ]: Serving the registration form. 
+[ INFO @ Mon 2014-08-25 16:31:01 CEST - User: fguashsgu ]: New user created. 
+[ INFO @ Mon 2014-08-25 16:31:01 CEST - User: fguashsgu ]: User logged in. 
+[ INFO @ Mon 2014-08-25 16:34:02 CEST ]: Server initalized. 
+[ INFO @ Mon 2014-08-25 16:34:08 CEST ]: New thread created 
+[ INFO @ Mon 2014-08-25 16:34:09 CEST ]: Serving the registration form. 
+[ INFO @ Mon 2014-08-25 16:34:14 CEST - User: gushus ]: New user created. 
+[ INFO @ Mon 2014-08-25 16:34:14 CEST - User: gushus ]: User logged in. 
+[ INFO @ Mon 2014-08-25 16:34:22 CEST ]: Serving the registration form. 
+[ INFO @ Mon 2014-08-25 16:34:27 CEST - User: auhhah ]: New user created. 
+[ INFO @ Mon 2014-08-25 16:34:27 CEST - User: auhhah ]: User logged in. 
+[ INFO @ Mon 2014-08-25 16:35:03 CEST ]: Serving the registration form. 
+[ INFO @ Mon 2014-08-25 16:35:07 CEST - User: haha ]: New user created. 
+[ INFO @ Mon 2014-08-25 16:35:07 CEST - User: haha ]: User logged in. 
+[ INFO @ Mon 2014-08-25 16:35:17 CEST ]: New thread created 
+[ INFO @ Mon 2014-08-25 16:35:18 CEST ]: Serving the registration form. 
+[ INFO @ Mon 2014-08-25 16:35:23 CEST - User: lele ]: New user created. 
+[ INFO @ Mon 2014-08-25 16:35:23 CEST - User: lele ]: User logged in. 

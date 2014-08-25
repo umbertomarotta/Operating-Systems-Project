@@ -15,17 +15,41 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <signal.h>
+#include <string.h>
 #include "lib.h"
 
 // define externed vars
 pthread_mutex_t users_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t userdb_mutex = PTHREAD_MUTEX_INITIALIZER;
+UserList Users = NULL;
 UserList Users;
 int logfile;
 User SERVER;
 
 // Static strings
-const char menu[MAXBUF] = "\n 1. Visualizza utenti \n 2. Invia msg pubblico \n 3. Invia msg privato \n 4. Leggi msg pubblici \n 5. Leggi msg privati \n 6. Muovi \n 7. Leggi notifiche \n 8. Esci \n > ";
+const char menu[MAXBUF] = "\n 1. Visualizza utenti online \n 2. Invia msg pubblico \n 3. Invia msg privato \n 4. Leggi msg pubblici \n 5. Leggi msg privati \n 6. Muovi \n 7. Leggi notifiche \n 8. Esci \n > ";
 const char hello[MAXBUF] = "\n## MESSAGE SYSTEM ## \n 1. Registrazione \n 2. Esci \n > ";
+
+void userdb_init(){
+    struct User u;
+    int userfile = open("userdb", O_RDWR|O_CREAT|O_APPEND,S_IRUSR|S_IWUSR);
+    UserList ptr = NULL;
+    while(read(userfile, &u, sizeof(struct User))){
+        if(Users == NULL) {
+            Users = (UserList)malloc(sizeof(struct UserList));
+            Users->user = (User)malloc(sizeof(struct User));
+            memcpy(Users->user, &u, sizeof(struct User));
+            Users->next=NULL;
+        } else {
+            UserList N = (UserList)malloc(sizeof(struct UserList));
+            N->user = (User)malloc(sizeof(struct User));
+            memcpy(N->user, &u, sizeof(struct User));
+            N->next=Users;
+            Users=N;
+        }
+    }
+    close(userfile);
+}
 
 
 // Thread for first user interaction: Registration - Login or Exits
@@ -79,7 +103,7 @@ int main() {
         client_addr_len,
         retcode,
         fd;
-
+    userdb_init();
     pthread_t tid;
 
     struct sockaddr_in server_addr, client;
@@ -121,7 +145,7 @@ int main() {
     //printf("Server: waiting connection \n");
 
     SERVER = (User)malloc(sizeof(struct User));
-    SERVER->username = "SERVER";
+    strcpy(SERVER->username,"SERVER");
 
     // Ignore SIGPIPE is always good
     signal(SIGPIPE, SIG_IGN);
