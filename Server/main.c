@@ -37,7 +37,7 @@ void *manage(void *arg) {
     do {
         // Sending welcome message
         _send(fd, hello);
-        
+
         // Give the user a choice
         _recv(fd, buffer, 1);
         while ((atoi(buffer) <= 0 || atoi(buffer) > 3)) {
@@ -45,7 +45,7 @@ void *manage(void *arg) {
             _recv(fd, buffer, 1);
         }
         choice = atoi(buffer);
-        
+
         switch (choice) {
             case 1: {
                 manage_user(fd, 1);
@@ -64,17 +64,24 @@ void *manage(void *arg) {
 
 
 // Main Function
-int main(int argc, const char * argv[]) {
-    
+//int main(int argc, const char * argv[]) {
+int main() {
+
+    //Hardcoded parameters
+    int argc = 2;
+    char* argv[3];
+    argv[3] = "logfile.txt";
+    argv[1] = "4004";
+
     // Declaring some variables
     int server_socket,
         port_no,
         client_addr_len,
         retcode,
         fd;
-    
+
     pthread_t tid;
-    
+
     struct sockaddr_in server_addr, client;
     if (argc < 2) {
         printf("Usage:\n%s port [file_logging]\n", argv[0]);
@@ -85,7 +92,7 @@ int main(int argc, const char * argv[]) {
     } else {
         logfile = open("log.txt",O_RDWR|O_CREAT|O_APPEND,S_IRUSR|S_IWUSR);
     }
-    
+
     //printf("Server: initialization \n");
     server_socket = socket(AF_INET, SOCK_STREAM, 0);
     if (server_socket == -1) {
@@ -96,39 +103,39 @@ int main(int argc, const char * argv[]) {
     _info("Server initalized.");
     // Get the port number from argv
     port_no = atoi(argv[1]);
-    
+
     // Setting up the server
     server_addr.sin_family = AF_INET;
     server_addr.sin_addr.s_addr = INADDR_ANY;
     server_addr.sin_port = htons(port_no);
-    
+
     retcode = bind(server_socket, (struct sockaddr*)&server_addr, sizeof(server_addr));
-    
+
     if (retcode == -1) {
         perror("Bind error: ");
         return -1;
     }
-    
+
     listen(server_socket, 1);
     //_info("Server listening and waiting connections.");
     //printf("Server: waiting connection \n");
-    
+
     SERVER = (User)malloc(sizeof(struct User));
     SERVER->username = "SERVER";
-    
+
     // Ignore SIGPIPE is always good
     signal(SIGPIPE, SIG_IGN);
-    
+
     client_addr_len = sizeof(client);
-    
-    
+
+
     // Socket loop
     while (1) {
         fd = accept(server_socket, (struct sockaddr*)&client, &client_addr_len);
         pthread_create(&tid, NULL, manage, (void*)&fd);
         pthread_detach(tid);
     }
-    
+
     close(server_socket);
     _info("Socket closed.");
     _info("Server shut down");

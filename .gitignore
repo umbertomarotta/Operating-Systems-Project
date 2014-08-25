@@ -6,3 +6,5 @@
 Client/bin/Debug/client
 
 Server/bin/Debug/server
+
+*.depend

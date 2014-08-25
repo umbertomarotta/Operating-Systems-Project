@@ -26,39 +26,45 @@ void sig_func(int sig) {
     exit(0);
 }
 
-
-int main(int argc, const char * argv[])
+//int main(int argc, const char * argv[])
+int main()
 {
+    //Hardcoded parameters
+    int argc = 3;
+    char* argv[3];
+    argv[2] = "4004";
+    argv[1] = "localhost";
+
     long num;
     int portno;
     struct sockaddr_in sin;
     struct hostent *hp;
     char buffer[N];
-    
+
     if (argc != 3) {
         printf("Usage: HOST PORT");
         exit(1);
     }
-    
+
     if ((hp = gethostbyname(argv[1])) == 0) {
         perror("Error: ");
         exit(1);
     }
-    
+
     c_fd = socket(AF_INET, SOCK_STREAM, 0);
     portno = atoi(argv[2]);
     sin.sin_family = AF_INET;
     memcpy((char *)&sin.sin_addr, (char *)hp->h_addr, hp->h_length);
     sin.sin_port = htons(portno);
-    
+
     if (connect(c_fd, (struct sockaddr*) &sin, sizeof(sin)) < 0) {
         printf("Connection failed \n");
         return 1;
     }
-    
+
     // Register the signal handler
     signal(SIGINT, sig_func);
-    
+
     // Socket read/write loop interaction
     while (1) {
         num = read(c_fd, buffer, sizeof(buffer));
