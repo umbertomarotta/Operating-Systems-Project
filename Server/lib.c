@@ -129,15 +129,15 @@ void manage_user(int fd, int registration) {
         memset(buffer, 0, MAXBUF);
         char notif[MAXBUF];
         if (user->noti_count > 0) {
-            sprintf(notif, "\n## MESSAGE SYSTEM MENU ## [Notifiche: %d]",
+            sprintf(notif, "\n## MOVIE RATING SYSTEM MENU ## [Notifiche: %d]",
                     user->noti_count);
         } else {
-            sprintf(notif, "\n## MESSAGE SYSTEM MENU ##");
+            sprintf(notif, "\n## RATING SYSTEM MENU ##");
         }
         strcat(notif, menu);
         _send(user->fd, notif);
         _recv(user->fd, buffer, 1);
-        while (atoi(buffer) <= 0 || atoi(buffer) > 4) {
+        while (atoi(buffer) <= 0 || atoi(buffer) > 6) {
             _send(user->fd, " > ");
             _recv(user->fd, buffer, 1);
         }
@@ -155,16 +155,15 @@ void manage_user(int fd, int registration) {
                 add_film(user);
             }
                 break;
-            /*case 4: {
-                read_public_messages(user);
-                break;
+            case 4: {
+                show_f_val(user);
             }
                 break;
             case 5: {
-                read_private_messages(user);
+                add_val(user);
                 break;
             }
-            case 6: {
+           /*case 6: {
                 move_user(user);
             }
                 break;
@@ -178,7 +177,7 @@ void manage_user(int fd, int registration) {
             default:
                 break;
         }
-    } while (choice > 0 && choice < 4);
+    } while (choice > 0 && choice < 6);
     user->is_on=0;
     _infoUser("User logged out.", user->username);
 }
@@ -237,6 +236,17 @@ User find_username(UserList U, char *new_user){
     }
 }
 
+Film find_film(FilmList F, char *f_title){
+    if(F != NULL){
+        while(F != NULL && F->film !=NULL){
+            if(strcmp(F->film->title, f_title)==0)
+                return F->film;
+            F=F->next;
+        }
+    }
+    return NULL;
+}
+
 UserList U_add_to(UserList U, User new_user) {
     if (U == NULL) {
         U = (UserList)malloc(sizeof(struct UserList));
@@ -265,6 +275,7 @@ void add_film(User u){
     strcpy(new_film->genre, buffer);
     new_film->f_average=0;
     new_film->film_valutations=NULL;
+    pthread_mutex_init(&new_film->val_mutex, NULL); 
     F_add_to(new_film);
     pthread_mutex_lock(&filmdb_mutex);
     int filmfile=open("filmdb", O_RDWR|O_CREAT|O_APPEND|O_TRUNC,S_IRUSR,S_IWUSR);
@@ -311,33 +322,111 @@ UserList remove_from(UserList U, User user) {
 void show_online_users(User user){
     UserList u = Users;
     char buffer[MAXBUF];
-    char aux[121];
     memset(buffer, '\0', MAXBUF);
     sprintf(buffer, "\n## ONLINE USERS ##\n");
+    _send(user->fd, buffer);
     while(u != NULL){
         if(u->user->is_on == 1){
-            sprintf(aux, " > %s\n", u->user->username);
-            strcat(buffer, aux);
+            sprintf(buffer, " > %s\n", u->user->username);
+            _send(user->fd, buffer);
             
         }
         u=u->next;
     }
-    _send(user->fd, buffer);
 }
 
 void show_film(User u){
     FilmList f = Films;
     char buffer[MAXBUF];
-    char aux[129];
     memset(buffer, '\0', MAXBUF);
     sprintf(buffer, "\n ## ELENCO FILM ##\n");
     _send(u->fd, buffer);
     while(f != NULL){
         sprintf(buffer, " > [%s] %s (%s)\n", f->film->year, f->film->title, f->film->genre);
         _send(u->fd, buffer);
-        //_recv(u->fd, buffer, 1);
-        //strcat(buffer, aux);
         f=f->next;
     }
-    //_send(u->fd, buffer);
+}
+
+int show_film_valutation(User u, Film f){
+    char buffer[MAXBUF];
+    if(f!=NULL){
+        F_ValutationList f_val = f->film_valutations;
+        memset(buffer, '\0', MAXBUF);
+        sprintf(buffer, "\n ## VALUTAZIONI DEL FILM %s ##\n", f->title);
+        _send(u->fd, buffer);
+        while(f_val != NULL){
+            sprintf(buffer, " > [%s] Ha commentato:\n\t%s [%d]\n", 
+                    f_val->f_valutation->from,
+                    f_val->f_valutation->comment, f_val->f_valutation->F_score);
+            _send(u->fd, buffer);
+            f_val=f_val->next;
+        }
+        return 1;
+    }else{
+        sprintf(buffer, "\n ## FILM NON TROVATO ##\n");
+        _send(u->fd, buffer);
+        return 0;
+    }
+}
+
+void show_f_val(User u){
+    char buffer[MAXBUF];
+    memset(buffer, '\0', MAXBUF);
+    do{
+        _send(u->fd, " > Insert Film Title: ");
+        _recv(u->fd, buffer, 1);
+    }while(!show_film_valutation(u, find_film(Films,buffer)) && strcmp(buffer,":quit"));
+}
+
+void add_val(User u){
+    char buffer[MAXBUF];
+    int score;
+    Film f;
+    memset(buffer, '\0', MAXBUF);   
+    F_Valutation new_val = (F_Valutation)malloc(sizeof(struct F_Valutation));
+    do{
+        _send(u->fd, " > Insert Film : ");
+        _recv(u->fd, buffer, 1);
+        f=find_film(Films, buffer);
+    }while(!f);
+    _send(u->fd, " > Insert Comment: ");
+    _recv(u->fd, buffer, 1);
+    strcpy(new_val->comment, buffer);
+    do{
+        _send(u->fd, " > Insert Score [1,5]: ");
+        _recv(u->fd, buffer, 1);
+        score=atoi(buffer);
+    }while(score<1 || score >5);
+    new_val->F_score=score;
+    new_val->from=u;
+    new_val->Comment_avg=0;
+    new_val->CommentScores=NULL;
+    pthread_mutex_lock(&f->val_mutex);
+    f->film_valutations=Val_add_to(f->film_valutations, new_val);
+    pthread_mutex_unlock(&f->val_mutex);
+    /*pthread_mutex_lock(&filmdb_mutex);
+    int filmfile=open("filmdb", O_RDWR|O_CREAT|O_APPEND|O_TRUNC,S_IRUSR,S_IWUSR);
+    FilmList ptr=Films;
+    while(ptr!=NULL){
+        write(filmfile, ptr->film, sizeof(struct Film));
+        ptr=ptr->next;
+    }
+    close(filmfile);
+    pthread_mutex_unlock(&filmdb_mutex);
+    _info("New film added to database.");*/
+}
+
+F_ValutationList Val_add_to(F_ValutationList LVal, F_Valutation new_val){
+    if(LVal==NULL){
+        LVal = (F_ValutationList)malloc(sizeof(struct F_ValutationList));
+        LVal->f_valutation = new_val;
+        LVal->next=NULL;
+    }else{
+        F_ValutationList node = (F_ValutationList)malloc(sizeof(struct F_ValutationList));
+        node->f_valutation=new_val;
+        node->next=LVal;
+        LVal=node;
+    }
+    return LVal;
 }

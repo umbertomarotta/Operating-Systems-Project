@@ -204,3 +204,51 @@
 [ INFO @ Tue 2014-08-26 13:37:49 CEST ]: New thread created 
 [ INFO @ Tue 2014-08-26 13:37:55 CEST - User: n0tsaved ]: User logged in. 
 [ INFO @ Tue 2014-08-26 13:38:16 CEST - User: n0tsaved ]: User logged out. 
+[ INFO @ Tue 2014-08-26 14:46:33 CEST ]: Server initalized. 
+[ INFO @ Tue 2014-08-26 14:46:33 CEST ]: Server listening and waiting connections. 
+[ INFO @ Tue 2014-08-26 14:46:38 CEST ]: New thread created 
+[ INFO @ Tue 2014-08-26 14:46:42 CEST - User: kingbastard ]: User logged in. 
+[ INFO @ Tue 2014-08-26 14:46:55 CEST - User: kingbastard ]: User logged out. 
+[ ERROR @ Tue 2014-08-26 14:47:18 CEST ]: User doesn't exist 
+[ INFO @ Tue 2014-08-26 14:48:41 CEST ]: Server initalized. 
+[ INFO @ Tue 2014-08-26 14:48:41 CEST ]: Server listening and waiting connections. 
+[ INFO @ Tue 2014-08-26 14:48:45 CEST ]: New thread created 
+[ INFO @ Tue 2014-08-26 14:48:49 CEST - User: kingbastard ]: User logged in. 
+[ INFO @ Tue 2014-08-26 14:50:19 CEST - User: kingbastard ]: User logged out. 
+[ INFO @ Tue 2014-08-26 14:50:50 CEST ]: Server initalized. 
+[ INFO @ Tue 2014-08-26 14:52:28 CEST ]: Server initalized. 
+[ INFO @ Tue 2014-08-26 14:52:28 CEST ]: Server listening and waiting connections. 
+[ INFO @ Tue 2014-08-26 14:52:38 CEST ]: New thread created 
+[ INFO @ Tue 2014-08-26 14:52:42 CEST - User: n0tsaved ]: User logged in. 
+[ INFO @ Tue 2014-08-26 14:53:52 CEST ]: Server initalized. 
+[ INFO @ Tue 2014-08-26 14:53:53 CEST ]: Server initalized. 
+[ INFO @ Tue 2014-08-26 14:53:54 CEST ]: Server initalized. 
+[ INFO @ Tue 2014-08-26 14:53:54 CEST ]: Server initalized. 
+[ INFO @ Tue 2014-08-26 14:54:14 CEST ]: Server initalized. 
+[ INFO @ Tue 2014-08-26 14:54:15 CEST ]: Server initalized. 
+[ INFO @ Tue 2014-08-26 14:56:15 CEST ]: Server initalized. 
+[ INFO @ Tue 2014-08-26 14:56:15 CEST ]: Server listening and waiting connections. 
+[ INFO @ Tue 2014-08-26 14:56:18 CEST ]: New thread created 
+[ INFO @ Tue 2014-08-26 14:56:22 CEST - User: kingbastard ]: User logged in. 
+[ INFO @ Tue 2014-08-26 14:57:15 CEST - User: kingbastard ]: User logged out. 
+[ INFO @ Tue 2014-08-26 16:54:53 CEST ]: Server initalized. 
+[ INFO @ Tue 2014-08-26 16:54:53 CEST ]: Server listening and waiting connections. 
+[ INFO @ Tue 2014-08-26 16:54:57 CEST ]: New thread created 
+[ INFO @ Tue 2014-08-26 16:55:04 CEST - User: kingbastard ]: User logged in. 
+[ INFO @ Tue 2014-08-26 16:55:15 CEST ]: New film added to database. 
+[ INFO @ Tue 2014-08-26 16:55:23 CEST ]: New film added to database. 
+[ INFO @ Tue 2014-08-26 16:55:52 CEST - User: kingbastard ]: User logged out. 
+[ INFO @ Tue 2014-08-26 16:56:04 CEST - User: n0tsaved ]: User logged in. 
+[ INFO @ Tue 2014-08-26 16:56:46 CEST - User: n0tsaved ]: User logged out. 
+[ INFO @ Tue 2014-08-26 17:03:42 CEST ]: Server initalized. 
+[ INFO @ Tue 2014-08-26 17:03:42 CEST ]: Server listening and waiting connections. 
+[ INFO @ Tue 2014-08-26 17:03:46 CEST ]: New thread created 
+[ INFO @ Tue 2014-08-26 17:03:51 CEST - User: kingbastard ]: User logged in. 
+[ INFO @ Tue 2014-08-26 17:04:52 CEST ]: New thread created 
+[ INFO @ Tue 2014-08-26 17:04:58 CEST - User: n0tsaved ]: User logged in. 
+[ INFO @ Tue 2014-08-26 17:06:45 CEST ]: New thread created 
+[ INFO @ Tue 2014-08-26 17:06:50 CEST - User: n0tsaved ]: User logged in. 
+[ INFO @ Tue 2014-08-26 17:06:59 CEST - User: n0tsaved ]: User logged out. 
+[ INFO @ Tue 2014-08-26 17:07:03 CEST - User: kingbastard ]: User logged in. 
+[ INFO @ Tue 2014-08-26 17:07:13 CEST - User: kingbastard ]: User logged out. 
+[ INFO @ Tue 2014-08-26 17:07:17 CEST - User: n0tsaved ]: User logged out. 

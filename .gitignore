@@ -3,6 +3,8 @@
 
 *.layout
 
+*.swp
+
 Client/bin/Debug/client
 
 Server/bin/Debug/server
