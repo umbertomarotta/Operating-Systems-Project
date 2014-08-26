@@ -1,7 +1,6 @@
 #ifndef ServerClient_library_h
 #define ServerClient_library_h
 #include <pthread.h>
-#include <openssl/sha.h>
 #define MAXBUF 1024
 
 
@@ -53,6 +52,7 @@ struct FilmList{
 struct F_Valutation{
     char comment[121];
     User from;
+    char user[65];
     int F_score;
     float Comment_avg;
     C_ValutationList CommentScores;
@@ -100,8 +100,7 @@ Film find_film(FilmList F, char *f_title);
 int show_film_valutation(User u, Film f);
 void show_f_val(User u);
 void add_val(User u);
-F_ValutationList Val_add_to(F_ValutationList LVal, F_Valutation new_val);
-
+F_ValutationList Val_add_to(F_ValutationList LVal, char* title, F_Valutation new_val);
 
 
 #endif

@@ -31,26 +31,49 @@ User SERVER;
 const char menu[MAXBUF] = "\n 1. Visualizza utenti online \n 2. Visualizza elenco film \n 3. Aggiungi film \n 4. Visualizza valutazioni film \n 5. Commenta Film \n 6. Esci \n > ";
 const char hello[MAXBUF] = "\n## MOVIE RATING SYSTEM ## \n 1. Registrazione \n 2. Login \n 3. Esci \n > ";
 
+void commentdb_init(F_ValutationList *Head, F_Valutation val, char *title){
+    if(*Head==NULL){
+        *Head=(F_ValutationList)malloc(sizeof(struct F_ValutationList));
+        (*Head)->f_valutation=val;
+        (*Head)->next=NULL;
+        (*Head)->f_valutation->from=find_username(Users, (*Head)->f_valutation->user);
+    }else{
+        /*F_ValutationList ptr = *Head;
+        while(ptr->next!=NULL)
+            ptr=ptr->next;
+        ptr->next=(F_ValutationList)malloc(sizeof(struct F_ValutationList));
+        ptr->next->f_valutation=val;
+        ptr->next->next=NULL;
+        ptr->next->f_valutation->from=find_username(Users, (*Head)->f_valutation->user);
+    }*/
+        F_ValutationList ptr=(F_ValutationList)malloc(sizeof(struct F_ValutationList));
+        ptr->f_valutation=val;
+        ptr->f_valutation->from=find_username(Users, val->user);
+        ptr->next=*Head;
+        *Head=ptr;
+    }
+}
+
 void filmdb_init(){
     struct Film f;
     FilmList ptr = Films;
     int filmfile = open("filmdb", O_RDWR|O_CREAT,S_IRUSR|S_IWUSR);
+    struct F_Valutation v;
+    char buffer[MAXBUF];
+    int filmcomments;    
+    F_Valutation val=NULL;
     while(read(filmfile, &f, sizeof(struct Film))){
-        /*if(Films == NULL) {
-            Films = (FilmList)malloc(sizeof(struct FilmList));
-            Films->film = (Film)malloc(sizeof(struct Film));
-            memcpy(Films->film, &f, sizeof(struct Film));
-            Films->next=NULL;
-        } else {
-            FilmList N = (FilmList)malloc(sizeof(struct FilmList));
-            N->film = (Film)malloc(sizeof(struct Film));
-            memcpy(N->film, &f, sizeof(struct Film));
-            N->next=Films;
-            Films=N;
-        }*/
         Film new_film = (Film)malloc(sizeof(struct Film));
         memcpy(new_film, &f, sizeof(struct Film));
         F_add_to(new_film);
+        sprintf(buffer, "%s.film_comments", new_film->title);
+        filmcomments=open(buffer, O_RDWR|O_CREAT, S_IRUSR|S_IWUSR);
+        while(read(filmcomments, &v, sizeof(struct F_Valutation))){
+            val=(F_Valutation)malloc(sizeof(struct F_Valutation));
+            memcpy(val, &v, sizeof(struct F_Valutation));
+            commentdb_init(&new_film->film_valutations, val, new_film->title);
+        }
+        close(filmcomments);
     }
     close(filmfile);
 }

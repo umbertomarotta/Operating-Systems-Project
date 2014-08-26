@@ -126,7 +126,7 @@ void manage_user(int fd, int registration) {
     user->fd=fd;
     int choice;
     do {
-        memset(buffer, 0, MAXBUF);
+        memset(buffer, '\0', MAXBUF);
         char notif[MAXBUF];
         if (user->noti_count > 0) {
             sprintf(notif, "\n## MOVIE RATING SYSTEM MENU ## [Notifiche: %d]",
@@ -374,7 +374,7 @@ void show_f_val(User u){
     char buffer[MAXBUF];
     memset(buffer, '\0', MAXBUF);
     do{
-        _send(u->fd, " > Insert Film Title: ");
+        _send(u->fd, " > Select Title: ");
         _recv(u->fd, buffer, 1);
     }while(!show_film_valutation(u, find_film(Films,buffer)) && strcmp(buffer,":quit"));
 }
@@ -386,7 +386,7 @@ void add_val(User u){
     memset(buffer, '\0', MAXBUF);   
     F_Valutation new_val = (F_Valutation)malloc(sizeof(struct F_Valutation));
     do{
-        _send(u->fd, " > Insert Film : ");
+        _send(u->fd, " > Select Film: ");
         _recv(u->fd, buffer, 1);
         f=find_film(Films, buffer);
     }while(!f);
@@ -402,8 +402,9 @@ void add_val(User u){
     new_val->from=u;
     new_val->Comment_avg=0;
     new_val->CommentScores=NULL;
+    strcpy(new_val->user, u->username);
     pthread_mutex_lock(&f->val_mutex);
-    f->film_valutations=Val_add_to(f->film_valutations, new_val);
+    f->film_valutations=Val_add_to(f->film_valutations, f->title, new_val);
     pthread_mutex_unlock(&f->val_mutex);
     /*pthread_mutex_lock(&filmdb_mutex);
     int filmfile=open("filmdb", O_RDWR|O_CREAT|O_APPEND|O_TRUNC,S_IRUSR,S_IWUSR);
@@ -417,7 +418,10 @@ void add_val(User u){
     _info("New film added to database.");*/
 }
 
-F_ValutationList Val_add_to(F_ValutationList LVal, F_Valutation new_val){
+F_ValutationList Val_add_to(F_ValutationList LVal, char *title,  F_Valutation new_val){
+    char buffer[MAXBUF];
+    sprintf(buffer, "%s.film_comments", title);
+    int filmcomments=open(buffer, O_RDWR|O_CREAT|O_APPEND, S_IRUSR|S_IWUSR);
     if(LVal==NULL){
         LVal = (F_ValutationList)malloc(sizeof(struct F_ValutationList));
         LVal->f_valutation = new_val;
@@ -428,5 +432,14 @@ F_ValutationList Val_add_to(F_ValutationList LVal, F_Valutation new_val){
         node->next=LVal;
         LVal=node;
     }
+    write(filmcomments, LVal->f_valutation, sizeof(struct F_Valutation));
+    close(filmcomments);
     return LVal;
 }
+
+/*void convertSHA1BinaryToCharStr(unsigned char *hash, char *hashstr) {
+    int i=0;
+    for (;i< sizeof(hash)/sizeof(hash[0]);++i)
+        strcat(hashtr,"%02x \n", hash[i]);
+
+}*/
