@@ -137,7 +137,7 @@ void manage_user(int fd, int registration) {
         strcat(notif, menu);
         _send(user->fd, notif);
         _recv(user->fd, buffer, 1);
-        while (atoi(buffer) <= 0 || atoi(buffer) > 6) {
+        while (atoi(buffer) <= 0 || atoi(buffer) > 3) {
             _send(user->fd, " > ");
             _recv(user->fd, buffer, 1);
         }
@@ -152,18 +152,18 @@ void manage_user(int fd, int registration) {
             }
                 break;
             case 3: {
-                add_film(user);
+                return;
             }
-                break;
-            case 4: {
+                
+            /*case 4: {
                 show_f_val(user);
-            }
+                }
                 break;
-            case 5: {
+           case 5: {
                 add_val(user);
                 break;
             }
-           /*case 6: {
+           case 6: {
                 move_user(user);
             }
                 break;
@@ -177,7 +177,7 @@ void manage_user(int fd, int registration) {
             default:
                 break;
         }
-    } while (choice > 0 && choice < 6);
+    } while (choice > 0 && choice < 3);
     user->is_on=0;
     _infoUser("User logged out.", user->username);
 }
@@ -273,7 +273,9 @@ void add_film(User u){
     _send(u->fd, " > Insert genre: ");
     _recv(u->fd, buffer, 1);
     strcpy(new_film->genre, buffer);
-    new_film->f_average=0;
+    new_film->f_avg=0;
+    new_film->f_part_avg=0;
+    new_film->f_avg_count=0;
     new_film->film_valutations=NULL;
     pthread_mutex_init(&new_film->val_mutex, NULL); 
     F_add_to(new_film);
@@ -336,16 +338,49 @@ void show_online_users(User user){
 }
 
 void show_film(User u){
+    const char f_menu[] = "\n 1. Mostra Commenti \n 2. Aggiungi Film \n 3. Esci \n >";
     FilmList f = Films;
     char buffer[MAXBUF];
     memset(buffer, '\0', MAXBUF);
     sprintf(buffer, "\n ## ELENCO FILM ##\n");
     _send(u->fd, buffer);
     while(f != NULL){
-        sprintf(buffer, " > [%s] %s (%s)\n", f->film->year, f->film->title, f->film->genre);
+        sprintf(buffer, " > [%s] %s (%s) Rating: [%.2f/5]\n", 
+                f->film->year, 
+                f->film->title, 
+                f->film->genre,
+                f->film->f_avg);
         _send(u->fd, buffer);
         f=f->next;
     }
+    int choice;
+    do{
+        memset(buffer, '\0', MAXBUF);
+        sprintf(buffer, "\n## RATING SYSTEM MENU > FILM ##");
+        strcat(buffer, f_menu);
+        _send(u->fd, buffer);
+        _recv(u->fd, buffer, 1);
+        while (atoi(buffer) <= 0 || atoi(buffer) > 3) {
+            _send(u->fd, " > ");
+            _recv(u->fd, buffer, 1);
+        }
+        choice = atoi(buffer);
+        switch (choice) {
+            case 1: {
+                show_f_val(u);
+                }
+                break;
+            case 2: {       
+                add_film(u);
+                }
+                break;
+            case 3: 
+                return;
+                
+            default:
+                break;
+        }
+    }while(choice<0 || choice >3);
 }
 
 int show_film_valutation(User u, Film f){
@@ -372,24 +407,50 @@ int show_film_valutation(User u, Film f){
 
 void show_f_val(User u){
     char buffer[MAXBUF];
+    Film f=NULL;
+    const char v_menu[]= "\n 1. Commenta Film \n 2. Esci \n > ";
     memset(buffer, '\0', MAXBUF);
     do{
         _send(u->fd, " > Select Title: ");
         _recv(u->fd, buffer, 1);
-    }while(!show_film_valutation(u, find_film(Films,buffer)) && strcmp(buffer,":quit"));
+    }while(!show_film_valutation(u, f=find_film(Films,buffer)) && strcmp(buffer,":quit"));    
+    int choice;
+    do{
+        memset(buffer, '\0', MAXBUF);
+        sprintf(buffer, "\n## RATING SYSTEM MENU > FILM > COMMENTI [%s] ##", f->title);
+        strcat(buffer, v_menu);
+        _send(u->fd, buffer);
+        _recv(u->fd, buffer, 1);
+        while (atoi(buffer) <= 0 || atoi(buffer) > 2) {
+            _send(u->fd, " > ");
+            _recv(u->fd, buffer, 1);
+        }
+        choice = atoi(buffer);
+        switch (choice) {
+            case 1: {
+                add_val(u, f);
+                }
+                break;
+            case 2: {        
+                return;
+                }
+                
+            default:
+                break;
+        }
+    }while(choice<0 || choice >2);
 }
 
-void add_val(User u){
+void add_val(User u, Film f){
     char buffer[MAXBUF];
     int score;
-    Film f;
     memset(buffer, '\0', MAXBUF);   
     F_Valutation new_val = (F_Valutation)malloc(sizeof(struct F_Valutation));
-    do{
+    /*do{
         _send(u->fd, " > Select Film: ");
         _recv(u->fd, buffer, 1);
         f=find_film(Films, buffer);
-    }while(!f);
+    }while(!f);*/
     _send(u->fd, " > Insert Comment: ");
     _recv(u->fd, buffer, 1);
     strcpy(new_val->comment, buffer);
@@ -404,6 +465,9 @@ void add_val(User u){
     new_val->CommentScores=NULL;
     strcpy(new_val->user, u->username);
     pthread_mutex_lock(&f->val_mutex);
+    f->f_avg_count++;
+    f->f_part_avg += score;
+    f->f_avg = (float) f->f_part_avg / f->f_avg_count;
     f->film_valutations=Val_add_to(f->film_valutations, f->title, new_val);
     pthread_mutex_unlock(&f->val_mutex);
     /*pthread_mutex_lock(&filmdb_mutex);
@@ -414,8 +478,8 @@ void add_val(User u){
         ptr=ptr->next;
     }
     close(filmfile);
-    pthread_mutex_unlock(&filmdb_mutex);
-    _info("New film added to database.");*/
+    pthread_mutex_unlock(&filmdb_mutex);*/
+    _info("New comment added to database.");
 }
 
 F_ValutationList Val_add_to(F_ValutationList LVal, char *title,  F_Valutation new_val){

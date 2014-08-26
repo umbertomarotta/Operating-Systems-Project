@@ -39,7 +39,9 @@ struct Film{
     char title[33];
     char year[17];
     char genre[17];
-    float f_average;
+    float f_avg;
+    int f_part_avg;
+    int f_avg_count;
     F_ValutationList film_valutations;
     pthread_mutex_t val_mutex;
 };
@@ -99,7 +101,7 @@ void add_film(User user);
 Film find_film(FilmList F, char *f_title);
 int show_film_valutation(User u, Film f);
 void show_f_val(User u);
-void add_val(User u);
+void add_val(User u, Film f);
 F_ValutationList Val_add_to(F_ValutationList LVal, char* title, F_Valutation new_val);
 
 

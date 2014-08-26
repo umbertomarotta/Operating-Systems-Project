@@ -28,7 +28,7 @@ int logfile;
 User SERVER;
 
 // Static strings
-const char menu[MAXBUF] = "\n 1. Visualizza utenti online \n 2. Visualizza elenco film \n 3. Aggiungi film \n 4. Visualizza valutazioni film \n 5. Commenta Film \n 6. Esci \n > ";
+const char menu[MAXBUF] = "\n 1. Visualizza utenti online \n 2. Visualizza elenco film \n 3. Esci \n > ";
 const char hello[MAXBUF] = "\n## MOVIE RATING SYSTEM ## \n 1. Registrazione \n 2. Login \n 3. Esci \n > ";
 
 void commentdb_init(F_ValutationList *Head, F_Valutation val, char *title){

@@ -462,3 +462,41 @@
 [ INFO @ Tue 2014-08-26 22:12:49 CEST - User: n0tsaved ]: User logged in. 
 [ INFO @ Tue 2014-08-26 22:13:08 CEST - User: n0tsaved ]: User logged out. 
 [ INFO @ Tue 2014-08-26 22:13:11 CEST - User: kingbastard ]: User logged out. 
+[ INFO @ Wed 2014-08-27 01:04:38 CEST ]: Server initalized. 
+[ INFO @ Wed 2014-08-27 01:04:38 CEST ]: Server listening and waiting connections. 
+[ INFO @ Wed 2014-08-27 01:04:47 CEST ]: New thread created 
+[ INFO @ Wed 2014-08-27 01:04:53 CEST - User: n0tsaved ]: User logged in. 
+[ INFO @ Wed 2014-08-27 01:05:02 CEST ]: New thread created 
+[ INFO @ Wed 2014-08-27 01:05:08 CEST - User: kingbastard ]: User logged in. 
+[ INFO @ Wed 2014-08-27 01:05:30 CEST ]: New film added to database. 
+[ INFO @ Wed 2014-08-27 01:06:13 CEST ]: New film added to database. 
+[ INFO @ Wed 2014-08-27 01:06:30 CEST - User: kingbastard ]: User logged out. 
+[ INFO @ Wed 2014-08-27 01:06:40 CEST ]: Serving the registration form. 
+[ INFO @ Wed 2014-08-27 01:06:53 CEST ]: New thread created 
+[ INFO @ Wed 2014-08-27 01:06:59 CEST - User: kingbastard ]: User logged in. 
+[ INFO @ Wed 2014-08-27 01:07:47 CEST ]: New comment added to database. 
+[ INFO @ Wed 2014-08-27 01:08:09 CEST - User: n0tsaved ]: User logged out. 
+[ INFO @ Wed 2014-08-27 01:08:13 CEST - User: kingbastard ]: User logged out. 
+[ INFO @ Wed 2014-08-27 01:28:07 CEST ]: Server initalized. 
+[ INFO @ Wed 2014-08-27 01:28:07 CEST ]: Server listening and waiting connections. 
+[ INFO @ Wed 2014-08-27 01:28:14 CEST ]: New thread created 
+[ INFO @ Wed 2014-08-27 01:28:18 CEST - User: n0tsaved ]: User logged in. 
+[ INFO @ Wed 2014-08-27 01:28:36 CEST ]: New film added to database. 
+[ INFO @ Wed 2014-08-27 01:29:18 CEST ]: New comment added to database. 
+[ INFO @ Wed 2014-08-27 01:29:29 CEST ]: New thread created 
+[ INFO @ Wed 2014-08-27 01:29:34 CEST - User: kingbastard ]: User logged in. 
+[ INFO @ Wed 2014-08-27 01:30:06 CEST ]: New film added to database. 
+[ INFO @ Wed 2014-08-27 01:37:05 CEST ]: Server initalized. 
+[ INFO @ Wed 2014-08-27 01:37:05 CEST ]: Server listening and waiting connections. 
+[ INFO @ Wed 2014-08-27 01:37:15 CEST ]: New thread created 
+[ INFO @ Wed 2014-08-27 01:37:20 CEST - User: kingbastard ]: User logged in. 
+[ INFO @ Wed 2014-08-27 01:37:41 CEST ]: New film added to database. 
+[ INFO @ Wed 2014-08-27 01:37:46 CEST ]: New thread created 
+[ INFO @ Wed 2014-08-27 01:37:50 CEST - User: n0tsaved ]: User logged in. 
+[ INFO @ Wed 2014-08-27 01:38:12 CEST ]: New comment added to database. 
+[ INFO @ Wed 2014-08-27 01:38:46 CEST ]: New comment added to database. 
+[ INFO @ Wed 2014-08-27 01:39:09 CEST ]: New film added to database. 
+[ INFO @ Wed 2014-08-27 01:39:34 CEST ]: New comment added to database. 
+[ INFO @ Wed 2014-08-27 01:40:11 CEST ]: New thread created 
+[ INFO @ Wed 2014-08-27 01:40:15 CEST - User: n0tsaved ]: User logged in. 
+[ INFO @ Wed 2014-08-27 01:40:34 CEST ]: New comment added to database. 
