@@ -194,3 +194,13 @@
 [ INFO @ Tue 2014-08-26 01:00:46 CEST ]: New thread created 
 [ INFO @ Tue 2014-08-26 01:00:50 CEST - User: n0tsaved ]: User logged in. 
 [ INFO @ Tue 2014-08-26 01:01:45 CEST - User: n0tsaved ]: User logged in. 
+[ INFO @ Tue 2014-08-26 13:16:05 CEST ]: Server initalized. 
+[ INFO @ Tue 2014-08-26 13:16:05 CEST ]: Server listening and waiting connections. 
+[ INFO @ Tue 2014-08-26 13:16:09 CEST ]: New thread created 
+[ INFO @ Tue 2014-08-26 13:16:15 CEST - User: kingbastard ]: User logged in. 
+[ INFO @ Tue 2014-08-26 13:18:11 CEST ]: New film added to database. 
+[ INFO @ Tue 2014-08-26 13:37:44 CEST ]: Server initalized. 
+[ INFO @ Tue 2014-08-26 13:37:44 CEST ]: Server listening and waiting connections. 
+[ INFO @ Tue 2014-08-26 13:37:49 CEST ]: New thread created 
+[ INFO @ Tue 2014-08-26 13:37:55 CEST - User: n0tsaved ]: User logged in. 
+[ INFO @ Tue 2014-08-26 13:38:16 CEST - User: n0tsaved ]: User logged out. 

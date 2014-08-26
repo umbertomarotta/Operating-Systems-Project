@@ -171,7 +171,7 @@ int main() {
     }
 
     listen(server_socket, 1);
-    //_info("Server listening and waiting connections.");
+    _info("Server listening and waiting connections.");
     //printf("Server: waiting connection \n");
 
     SERVER = (User)malloc(sizeof(struct User));

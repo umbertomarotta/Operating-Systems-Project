@@ -180,6 +180,7 @@ void manage_user(int fd, int registration) {
         }
     } while (choice > 0 && choice < 4);
     user->is_on=0;
+    _infoUser("User logged out.", user->username);
 }
 
 
@@ -274,36 +275,24 @@ void add_film(User u){
     }
     close(filmfile);
     pthread_mutex_unlock(&filmdb_mutex);
+    _info("New film added to database.");
 }
 
 void F_add_to(Film new_film){
     FilmList F=Films;
-    if(F==NULL){
+    if(F==NULL || strcmp(F->film->title,new_film->title)>0){
         F = (FilmList)malloc(sizeof(struct FilmList));
-        F->film = new_film;
-        F->next = NULL;
+        F->film=new_film;
+        F->next=Films;
         Films=F;
     }else{
+        FilmList pred=F;
+        while(pred->next!=NULL && strcmp(pred->next->film->title,new_film->title)<0)
+            pred=pred->next;
         FilmList aux = (FilmList)malloc(sizeof(struct FilmList));
         aux->film=new_film;
-        aux->next=NULL;
-        if(strcmp(new_film->title, F->film->title)<0){
-            aux->next=Films;
-            Films=aux;
-        }else{        
-            FilmList temp=Films->next;
-            FilmList pred=Films;
-            while(temp!=NULL && strcmp(new_film->title, F->film->title)>0){
-                pred=temp;
-                temp=temp->next;
-            }
-            if(temp==NULL)
-                pred->next=aux;
-            else{
-                aux->next = temp;
-                pred->next=aux;
-            }
-        }
+        aux->next=pred->next;
+        pred->next=aux;
     }
     return;
 }
