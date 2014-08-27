@@ -311,8 +311,8 @@ void show_online_users(User user){
     strcat(buffer, aux);
     while(u != NULL){
         if(u->user->is_on == 1)
-            sprintf(aux, " > %s  [ONLINE]\n", u->user->username);
-        else sprintf(aux, " > %s [OFFLINE]\n", u->user->username);
+            sprintf(aux, " > %s\t[ONLINE]\n", u->user->username);
+        else sprintf(aux, " > %s\t[OFFLINE]\n", u->user->username);
         strcat(buffer, aux);       
         u=u->next;
     }
@@ -378,7 +378,8 @@ int show_film_valutation(User u, Film f){
     sprintf(b_aux, "\n ## COMMENTI DEL FILM %s ##\n", f->title);
     strcat(buffer, b_aux);
     while(f_val != NULL && f_val->f_valutation != NULL){
-        sprintf(b_aux, " > [%s] Ha commentato:\n\t%s [%d]\n", 
+        sprintf(b_aux, " > [%s] [%s] Ha commentato:\n\t%s [%d]\n",
+                    f_val->f_valutation->date,
                     f_val->f_valutation->user,
                     f_val->f_valutation->comment, 
                     f_val->f_valutation->F_score);
@@ -446,6 +447,10 @@ void show_f_val(User u){
 
 void add_val(User u, Film f){
     char buffer[MAXBUF];
+    char date[80];
+    time_t now = time(NULL);
+    struct tm ts = *localtime(&now);
+    strftime(date, sizeof(date), "%Y-%m-%d %H:%M", &ts);
     int score;
     memset(buffer, '\0', MAXBUF);   
     F_Valutation new_val = (F_Valutation)malloc(sizeof(struct F_Valutation));
@@ -465,6 +470,7 @@ void add_val(User u, Film f){
     new_val->F_score=score;
     new_val->from=u;
     new_val->Comment_avg=0;
+    strcpy(new_val->date, date);
     //new_val->CommentScores=NULL;
     strcpy(new_val->user, u->username);
     pthread_mutex_lock(&f->val_mutex);
@@ -473,6 +479,7 @@ void add_val(User u, Film f){
     f->f_avg = (float) f->f_part_avg / f->f_avg_count;
     Val_add_to(&(f->film_valutations), f->title, new_val);
     pthread_mutex_unlock(&f->val_mutex);
+    _infoUser("User submitted a new comment", u->username);
     _info("New comment added to database.");
 }
 

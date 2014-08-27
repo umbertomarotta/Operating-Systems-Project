@@ -56,6 +56,7 @@ struct F_Valutation{
     char comment[121];
     User from;
     char user[65];
+    char date[65];
     int F_score;
     float Comment_avg;
     //C_ValutationList CommentScores;

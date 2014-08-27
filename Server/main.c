@@ -1,12 +1,3 @@
-//
-//  main.c
-//  ServerClient
-//
-//  Created by Vince on 8/19/13.
-//  Copyright (c) 2013 Vince. All rights reserved.
-//
-// Remember: Comments don't compile
-
 #include <pthread.h>
 #include <netdb.h>
 #include <netinet/in.h>
