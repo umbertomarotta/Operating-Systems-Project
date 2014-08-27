@@ -2,6 +2,7 @@
 #define ServerClient_library_h
 #include <pthread.h>
 #define MAXBUF 1024
+#define MAX_PAGE_BUFF 5
 
 
 typedef struct UserList* UserList;
@@ -57,7 +58,7 @@ struct F_Valutation{
     char user[65];
     int F_score;
     float Comment_avg;
-    C_ValutationList CommentScores;
+    //C_ValutationList CommentScores;
 };
 
 struct F_ValutationList{
@@ -98,11 +99,11 @@ void show_online_users(User user);
 void F_add_to(Film new_film);
 void show_film(User user);
 void add_film(User user);
-Film find_film(FilmList F, char *f_title);
+Film find_film(char *f_title);
 int show_film_valutation(User u, Film f);
 void show_f_val(User u);
 void add_val(User u, Film f);
-F_ValutationList Val_add_to(F_ValutationList LVal, char* title, F_Valutation new_val);
+void Val_add_to(F_ValutationList *LVal, char* title, F_Valutation new_val);
 
 
 #endif

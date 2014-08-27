@@ -71,8 +71,11 @@ void filmdb_init(){
         while(read(filmcomments, &v, sizeof(struct F_Valutation))){
             val=(F_Valutation)malloc(sizeof(struct F_Valutation));
             memcpy(val, &v, sizeof(struct F_Valutation));
-            commentdb_init(&new_film->film_valutations, val, new_film->title);
+            new_film->f_avg_count++;
+            new_film->f_part_avg += val->F_score;
+            commentdb_init(&(new_film->film_valutations), val, new_film->title);
         }
+        new_film->f_avg= (float) new_film->f_part_avg / new_film->f_avg_count;
         close(filmcomments);
     }
     close(filmfile);

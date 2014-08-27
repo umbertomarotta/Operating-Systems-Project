@@ -67,13 +67,16 @@ int main()
 
     // Socket read/write loop interaction
     while (1) {
+        
         num = read(c_fd, buffer, sizeof(buffer));
+        
         if (num <=0) {
             printf("Connection closed.");
             break;
         }
         buffer[num] = '\0';
-        printf("%s", buffer);
+        printf("%s", buffer); 
+        
         bzero(buffer, N);
         fgets(buffer, N, stdin);
         size_t len = strlen(buffer);

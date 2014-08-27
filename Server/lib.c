@@ -236,7 +236,8 @@ User find_username(UserList U, char *new_user){
     }
 }
 
-Film find_film(FilmList F, char *f_title){
+Film find_film(char *f_title){
+    FilmList F=Films;
     if(F != NULL){
         while(F != NULL && F->film !=NULL){
             if(strcmp(F->film->title, f_title)==0)
@@ -338,25 +339,28 @@ void show_online_users(User user){
 }
 
 void show_film(User u){
-    const char f_menu[] = "\n 1. Mostra Commenti \n 2. Aggiungi Film \n 3. Esci \n >";
+    const char f_menu[] = "\n 1. Mostra Commenti \n 2. Aggiungi Film \n 3. Esci \n > ";
     FilmList f = Films;
     char buffer[MAXBUF];
+    char aux[129];
     memset(buffer, '\0', MAXBUF);
     sprintf(buffer, "\n ## ELENCO FILM ##\n");
-    _send(u->fd, buffer);
+    //_send(u->fd, buffer);
     while(f != NULL){
-        sprintf(buffer, " > [%s] %s (%s) Rating: [%.2f/5]\n", 
+        sprintf(aux, " > [%s] %s (%s) Rating: [%.2f/5]\n", 
                 f->film->year, 
                 f->film->title, 
                 f->film->genre,
                 f->film->f_avg);
-        _send(u->fd, buffer);
+        //_send(u->fd, buffer);
+        strcat(buffer, aux);
         f=f->next;
     }
+    _send(u->fd, buffer);
     int choice;
     do{
         memset(buffer, '\0', MAXBUF);
-        sprintf(buffer, "\n## RATING SYSTEM MENU > FILM ##");
+        sprintf(buffer, "\n## RATING SYSTEM MENU > FILM ##\n");
         strcat(buffer, f_menu);
         _send(u->fd, buffer);
         _recv(u->fd, buffer, 1);
@@ -380,30 +384,46 @@ void show_film(User u){
             default:
                 break;
         }
-    }while(choice<0 || choice >3);
+    }while(choice>0 && choice <3);
 }
 
 int show_film_valutation(User u, Film f){
-    char buffer[MAXBUF];
-    if(f!=NULL){
-        F_ValutationList f_val = f->film_valutations;
-        memset(buffer, '\0', MAXBUF);
-        sprintf(buffer, "\n ## VALUTAZIONI DEL FILM %s ##\n", f->title);
-        _send(u->fd, buffer);
-        while(f_val != NULL){
-            sprintf(buffer, " > [%s] Ha commentato:\n\t%s [%d]\n", 
-                    f_val->f_valutation->from,
-                    f_val->f_valutation->comment, f_val->f_valutation->F_score);
+    char buffer[4096];
+    char b_aux[MAXBUF];
+    int i=0;
+    bzero(b_aux, MAXBUF);
+    bzero(buffer, 4096);
+    F_ValutationList f_val = f->film_valutations;
+    sprintf(b_aux, "\n ## COMMENTI DEL FILM %s ##\n", f->title);
+    strcat(buffer, b_aux);
+    while(f_val != NULL && f_val->f_valutation != NULL){
+        sprintf(b_aux, " > [%s] Ha commentato:\n\t%s [%d]\n", 
+                    f_val->f_valutation->user,
+                    f_val->f_valutation->comment, 
+                    f_val->f_valutation->F_score);
+        strcat(buffer, b_aux);
+        ++i; 
+        if(i % MAX_PAGE_BUFF == 0){
+            sprintf(b_aux, 
+                    "\n 1. Visualizza altri \n 2. Esci \n > ");
+            strcat(buffer, b_aux);
             _send(u->fd, buffer);
-            f_val=f_val->next;
+            _recv(u->fd, buffer, 1);
+            if(atoi(buffer)==1){
+                bzero(buffer, 4096);
+                bzero(b_aux, MAXBUF);
+                continue;
+            }
+            else return 1;
         }
-        return 1;
-    }else{
-        sprintf(buffer, "\n ## FILM NON TROVATO ##\n");
-        _send(u->fd, buffer);
-        return 0;
+        f_val=f_val->next;
     }
+    _send(u->fd, buffer);
+    return 1;
+
 }
+
+
 
 void show_f_val(User u){
     char buffer[MAXBUF];
@@ -413,8 +433,10 @@ void show_f_val(User u){
     do{
         _send(u->fd, " > Select Title: ");
         _recv(u->fd, buffer, 1);
-    }while(!show_film_valutation(u, f=find_film(Films,buffer)) && strcmp(buffer,":quit"));    
+        f=find_film(buffer);
+    }while(f==NULL && strcmp(buffer,":quit")); 
     int choice;
+    show_film_valutation(u, f);
     do{
         memset(buffer, '\0', MAXBUF);
         sprintf(buffer, "\n## RATING SYSTEM MENU > FILM > COMMENTI [%s] ##", f->title);
@@ -462,48 +484,33 @@ void add_val(User u, Film f){
     new_val->F_score=score;
     new_val->from=u;
     new_val->Comment_avg=0;
-    new_val->CommentScores=NULL;
+    //new_val->CommentScores=NULL;
     strcpy(new_val->user, u->username);
     pthread_mutex_lock(&f->val_mutex);
     f->f_avg_count++;
     f->f_part_avg += score;
     f->f_avg = (float) f->f_part_avg / f->f_avg_count;
-    f->film_valutations=Val_add_to(f->film_valutations, f->title, new_val);
+    Val_add_to(&(f->film_valutations), f->title, new_val);
     pthread_mutex_unlock(&f->val_mutex);
-    /*pthread_mutex_lock(&filmdb_mutex);
-    int filmfile=open("filmdb", O_RDWR|O_CREAT|O_APPEND|O_TRUNC,S_IRUSR,S_IWUSR);
-    FilmList ptr=Films;
-    while(ptr!=NULL){
-        write(filmfile, ptr->film, sizeof(struct Film));
-        ptr=ptr->next;
-    }
-    close(filmfile);
-    pthread_mutex_unlock(&filmdb_mutex);*/
     _info("New comment added to database.");
 }
 
-F_ValutationList Val_add_to(F_ValutationList LVal, char *title,  F_Valutation new_val){
+void Val_add_to(F_ValutationList *LVal, char *title,  F_Valutation new_val){
     char buffer[MAXBUF];
     sprintf(buffer, "%s.film_comments", title);
     int filmcomments=open(buffer, O_RDWR|O_CREAT|O_APPEND, S_IRUSR|S_IWUSR);
-    if(LVal==NULL){
-        LVal = (F_ValutationList)malloc(sizeof(struct F_ValutationList));
-        LVal->f_valutation = new_val;
-        LVal->next=NULL;
+    if(*LVal==NULL){
+        *LVal = (F_ValutationList)malloc(sizeof(struct F_ValutationList));
+        (*LVal)->f_valutation = new_val;
+        (*LVal)->next=NULL;
     }else{
         F_ValutationList node = (F_ValutationList)malloc(sizeof(struct F_ValutationList));
         node->f_valutation=new_val;
-        node->next=LVal;
-        LVal=node;
+        node->next=*LVal;
+        *LVal=node;
     }
-    write(filmcomments, LVal->f_valutation, sizeof(struct F_Valutation));
+    write(filmcomments, (*LVal)->f_valutation, sizeof(struct F_Valutation));
     close(filmcomments);
-    return LVal;
 }
 
-/*void convertSHA1BinaryToCharStr(unsigned char *hash, char *hashstr) {
-    int i=0;
-    for (;i< sizeof(hash)/sizeof(hash[0]);++i)
-        strcat(hashtr,"%02x \n", hash[i]);
 
-}*/
