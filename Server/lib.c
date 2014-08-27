@@ -115,10 +115,9 @@ void manage_user(int fd, int registration) {
             _send(fd, " > Username: ");
             _recv(fd, buffer, 1);
             user=find_username(Users,buffer);
-            if(!user) _error("User doesn't exist");
             _send(fd, " > Password: ");
             _recv(fd, buffer, 1);
-        }while(user!=NULL && strcmp(user->password, buffer)!=0);
+        }while(user==NULL && strcmp(user->password, buffer)!=0);
     }
     assert(user != NULL);
     _infoUser("User logged in.", user->username);
@@ -154,26 +153,6 @@ void manage_user(int fd, int registration) {
             case 3: {
                 return;
             }
-                
-            /*case 4: {
-                show_f_val(user);
-                }
-                break;
-           case 5: {
-                add_val(user);
-                break;
-            }
-           case 6: {
-                move_user(user);
-            }
-                break;
-            case 7: {
-                read_notifications(user);
-            }
-                break;
-            case 8: {
-                return;
-            }*/
             default:
                 break;
         }
@@ -326,16 +305,18 @@ void show_online_users(User user){
     UserList u = Users;
     char buffer[MAXBUF];
     memset(buffer, '\0', MAXBUF);
-    sprintf(buffer, "\n## ONLINE USERS ##\n");
-    _send(user->fd, buffer);
+    char aux[129];
+    bzero(aux, 129);
+    sprintf(aux, "\n## ONLINE USERS ##\n");
+    strcat(buffer, aux);
     while(u != NULL){
-        if(u->user->is_on == 1){
-            sprintf(buffer, " > %s\n", u->user->username);
-            _send(user->fd, buffer);
-            
-        }
+        if(u->user->is_on == 1)
+            sprintf(aux, " > %s  [ONLINE]\n", u->user->username);
+        else sprintf(aux, " > %s [OFFLINE]\n", u->user->username);
+        strcat(buffer, aux);       
         u=u->next;
     }
+    _send(user->fd, buffer);
 }
 
 void show_film(User u){
