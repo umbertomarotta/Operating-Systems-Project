@@ -27,6 +27,7 @@ struct User{
     int part_avg;
     float u_average;
     int is_on;
+    pthread_mutex_t u_rate_mutex;
 };
 
 
@@ -53,13 +54,15 @@ struct FilmList{
 };
 
 struct F_Valutation{
+    int id;
     char comment[121];
     User from;
     char user[65];
     char date[65];
     int F_score;
     float Comment_avg;
-    //C_ValutationList CommentScores;
+    C_ValutationList CommentScores;
+    pthread_mutex_t comm_vote_mutex;
 };
 
 struct F_ValutationList{
@@ -69,7 +72,8 @@ struct F_ValutationList{
 
 struct C_Valutation{
     int C_score;
-    User from;
+    char user[65];
+    time_t tim;
 };
 
 struct C_ValutationList{
@@ -92,6 +96,7 @@ void _recv(int fd, void* buffer, int be_string);
 int _infoUser(char *buffer, char *user);
 int _info(char *buffer);
 int _error(char *buffer);
+void update_u_db();
 void manage_user(int fd, int registration);
 User find_username(UserList U, char *new_user);
 UserList U_add_to(UserList U, User new_user);
@@ -105,6 +110,10 @@ int show_film_valutation(User u, Film f);
 void show_f_val(User u);
 void add_val(User u, Film f);
 void Val_add_to(F_ValutationList *LVal, char* title, F_Valutation new_val);
-
+F_Valutation find_valutation(F_ValutationList, int);
+void vote_comment(User u, F_Valutation f, char *title);
+void C_Val_add_to(C_ValutationList *CVal, C_Valutation new_vote, int id, char *title);
+C_Valutation find_vote(C_ValutationList, User u);
+int check_ten_minutes(time_t now);
 
 #endif

@@ -43,6 +43,7 @@ void manage_user(int fd, int registration) {
         new_user->avg_count = 0;
         new_user->part_avg = 0;
         new_user->u_average = 0;
+        pthread_mutex_init(&new_user->u_rate_mutex,NULL);
         
 
         
@@ -117,7 +118,7 @@ void manage_user(int fd, int registration) {
             user=find_username(Users,buffer);
             _send(fd, " > Password: ");
             _recv(fd, buffer, 1);
-        }while(user==NULL && strcmp(user->password, buffer)!=0);
+        }while(user==NULL || strcmp(user->password, buffer)!=0);
     }
     assert(user != NULL);
     _infoUser("User logged in.", user->username);
@@ -161,6 +162,17 @@ void manage_user(int fd, int registration) {
     _infoUser("User logged out.", user->username);
 }
 
+void update_u_db(){
+    UserList u = Users;
+    pthread_mutex_lock(&userdb_mutex);
+    int userdb=open("userdb",O_RDWR|O_CREAT|O_APPEND|O_TRUNC, S_IRUSR | S_IWUSR);
+    while(u!=NULL){
+        write(userdb, u->user, sizeof(struct User));
+        u=u->next;
+    }
+    close(userdb);
+    pthread_mutex_unlock(&userdb_mutex);
+}
 
 int _infoUser(char* buffer, char* user) {
     char date[80];
@@ -311,8 +323,12 @@ void show_online_users(User user){
     strcat(buffer, aux);
     while(u != NULL){
         if(u->user->is_on == 1)
-            sprintf(aux, " > %s\t[ONLINE]\n", u->user->username);
-        else sprintf(aux, " > %s\t[OFFLINE]\n", u->user->username);
+            sprintf(aux, " > %s Rating: [%.2f/5]\t[ONLINE]\n",
+                    u->user->username,
+                    u->user->u_average); 
+        else sprintf(aux, " > %s Rating: [%.2f/5]\t[OFFLINE]\n",
+                u->user->username,
+                u->user->u_average);
         strcat(buffer, aux);       
         u=u->next;
     }
@@ -368,26 +384,70 @@ void show_film(User u){
     }while(choice>0 && choice <3);
 }
 
+F_Valutation find_valutation(F_ValutationList Head, int id){
+    F_ValutationList Lval = Head;
+    while(Lval!=NULL){
+        if(Lval->f_valutation->id == id)
+            return Lval->f_valutation;
+        Lval=Lval->next;
+    }
+    return NULL;
+}
+
+void vote_comment(User u, F_Valutation Valutation, char *title){
+    C_Valutation c = find_vote(Valutation->CommentScores, u);
+    if(c!=NULL)
+        if(!check_ten_minutes(c->tim)){
+            _send(u->fd," > You must wait 10 minutes to rate this comment.\n ");
+            return;
+        }
+    char buffer[MAXBUF];
+    time_t now = time(NULL);
+    int score;
+    memset(buffer, '\0', MAXBUF);   
+    C_Valutation new_vote = (C_Valutation)malloc(sizeof(struct C_Valutation));
+    do{
+        _send(u->fd, " > Insert Score [0,5]: ");
+        _recv(u->fd, buffer, 1);
+        score=atoi(buffer);
+    }while(score<0 || score >5);
+    new_vote->C_score=score;
+    strcpy(new_vote->user,u->username);
+    new_vote->tim=now;
+    pthread_mutex_lock(&Valutation->comm_vote_mutex);
+    pthread_mutex_lock(&Valutation->from->u_rate_mutex);
+    Valutation->from->avg_count++;
+    Valutation->from->part_avg += score;
+    Valutation->from->u_average = (float)Valutation->from->part_avg/Valutation->from->avg_count;
+    pthread_mutex_unlock(&Valutation->from->u_rate_mutex);
+    C_Val_add_to(&(Valutation->CommentScores), new_vote, Valutation->id, title);
+    pthread_mutex_unlock(&Valutation->comm_vote_mutex);
+    _infoUser("User voted a comment", u->username);
+    update_u_db();
+}
+
 int show_film_valutation(User u, Film f){
     char buffer[4096];
     char b_aux[MAXBUF];
+    const char c_menu[]="\n 1. Visualizza altri \n 2. Vota Recensione \n 3. Esci \n > ";
     int i=0;
+    F_Valutation choice=NULL;
     bzero(b_aux, MAXBUF);
     bzero(buffer, 4096);
     F_ValutationList f_val = f->film_valutations;
     sprintf(b_aux, "\n ## COMMENTI DEL FILM %s ##\n", f->title);
     strcat(buffer, b_aux);
     while(f_val != NULL && f_val->f_valutation != NULL){
-        sprintf(b_aux, " > [%s] [%s] Ha commentato:\n\t%s [%d]\n",
-                    f_val->f_valutation->date,
-                    f_val->f_valutation->user,
-                    f_val->f_valutation->comment, 
-                    f_val->f_valutation->F_score);
+        sprintf(b_aux, "\n %02d [%s] [%s] Ha commentato:\n\t%s [%d]\n",
+                f_val->f_valutation->id,
+                f_val->f_valutation->date,
+                f_val->f_valutation->user,
+                f_val->f_valutation->comment, 
+                f_val->f_valutation->F_score);
         strcat(buffer, b_aux);
         ++i; 
         if(i % MAX_PAGE_BUFF == 0){
-            sprintf(b_aux, 
-                    "\n 1. Visualizza altri \n 2. Esci \n > ");
+            sprintf(b_aux, c_menu);
             strcat(buffer, b_aux);
             _send(u->fd, buffer);
             _recv(u->fd, buffer, 1);
@@ -396,11 +456,31 @@ int show_film_valutation(User u, Film f){
                 bzero(b_aux, MAXBUF);
                 continue;
             }
+            else if(atoi(buffer)==2){
+                do{
+                    _send(u->fd, "Enter 'back' to stop voting or Select comment ID: ");
+                    _recv(u->fd, buffer, 1);
+                    if(strcmp(buffer, "back")==0) break;
+                    choice=find_valutation(f->film_valutations, atoi(buffer));
+                    if(choice) vote_comment(u, choice, f->title);
+                }while(1);
+                continue;
+            }
             else return 1;
         }
         f_val=f_val->next;
     }
+    strcat(buffer, "\n 1. Vota Recensione \n 2. Esci \n > ");
     _send(u->fd, buffer);
+    _recv(u->fd, buffer, 1);
+    if(atoi(buffer)==1)
+        do{
+            _send(u->fd, "Enter 'back' to stop voting or Select comment ID: ");
+            _recv(u->fd, buffer, 1);
+            if(strcmp(buffer, "back")==0) break;
+            choice=find_valutation(f->film_valutations, atoi(buffer));
+            if(choice) vote_comment(u, choice, f->title);
+        }while(1);
     return 1;
 
 }
@@ -470,8 +550,9 @@ void add_val(User u, Film f){
     new_val->F_score=score;
     new_val->from=u;
     new_val->Comment_avg=0;
+    pthread_mutex_init(&new_val->comm_vote_mutex, NULL);
     strcpy(new_val->date, date);
-    //new_val->CommentScores=NULL;
+    new_val->CommentScores=NULL;
     strcpy(new_val->user, u->username);
     pthread_mutex_lock(&f->val_mutex);
     f->f_avg_count++;
@@ -491,14 +572,49 @@ void Val_add_to(F_ValutationList *LVal, char *title,  F_Valutation new_val){
         *LVal = (F_ValutationList)malloc(sizeof(struct F_ValutationList));
         (*LVal)->f_valutation = new_val;
         (*LVal)->next=NULL;
+        (*LVal)->f_valutation->id=0;
     }else{
         F_ValutationList node = (F_ValutationList)malloc(sizeof(struct F_ValutationList));
         node->f_valutation=new_val;
         node->next=*LVal;
         *LVal=node;
+        (*LVal)->f_valutation->id=(*LVal)->next->f_valutation->id+1;
     }
     write(filmcomments, (*LVal)->f_valutation, sizeof(struct F_Valutation));
     close(filmcomments);
 }
 
+void C_Val_add_to(C_ValutationList *CVal, C_Valutation new_vote, int id, char *title){
+    char buffer[MAXBUF];
+    sprintf(buffer, "%s.%d.rec_vote", title, id);
+    int rec_votations=open(buffer, O_RDWR|O_CREAT|O_APPEND, S_IRUSR|S_IWUSR);
+    if(*CVal==NULL){
+        *CVal=(C_ValutationList)malloc(sizeof(struct C_ValutationList));
+        (*CVal)->c_valutation = new_vote;
+        (*CVal)->next=NULL;
+    }else{
+        C_ValutationList node=(C_ValutationList)malloc(sizeof(struct C_ValutationList));
+        node->c_valutation=new_vote;
+        node->next=*CVal;
+        *CVal=node;
+    }    
+    write(rec_votations, (*CVal)->c_valutation, sizeof(struct C_Valutation));
+    close(rec_votations);
+}
 
+C_Valutation find_vote(C_ValutationList CVal, User u){
+    C_ValutationList cval=CVal;
+    while(cval!=NULL){
+        if(strcmp(cval->c_valutation->user, u->username)==0)
+            return cval->c_valutation;
+        cval=cval->next;
+    }
+    return NULL;
+}
+
+int check_ten_minutes(time_t t_val){
+    time_t now = time(NULL);
+    if(difftime(t_val, now)>600)
+        return 1;
+    else return 0;
+}

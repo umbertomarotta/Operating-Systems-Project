@@ -22,6 +22,29 @@ User SERVER;
 const char menu[MAXBUF] = "\n 1. Visualizza utenti online \n 2. Visualizza elenco film \n 3. Esci \n > ";
 const char hello[MAXBUF] = "\n## MOVIE RATING SYSTEM ## \n 1. Registrazione \n 2. Login \n 3. Esci \n > ";
 
+void votedb_init(C_ValutationList *Head, char title, int id){
+    struct C_Valutation vot;
+    char buffer[MAXBUF];
+    sprintf(buffer, "%s.%d.rec_vote", title, id);
+    int vot_db=open(buffer, O_RDWR|O_CREAT,S_IRUSR|S_IWUSR);
+    C_ValutationList ptr = NULL;
+    while(read(vot_db, &vot, sizeof(struct C_Valutation))){
+        if(*Head==NULL){
+            *Head=(C_ValutationList)malloc(sizeof(struct C_ValutationList));
+            (*Head)->c_valutation=(C_Valutation)malloc(sizeof(struct C_Valutation));
+            memcpy((*Head)->c_valutation, &vot, sizeof(struct C_Valutation));
+            (*Head)->next=NULL;
+        }else{
+            ptr=(C_ValutationList)malloc(sizeof(struct C_ValutationList));
+            ptr->c_valutation=(C_Valutation)malloc(sizeof(struct C_Valutation));
+            memcpy(ptr->c_valutation, &vot, sizeof(struct C_Valutation));
+            ptr->next=*Head;
+            *Head=ptr;
+        }
+    }
+    close(vot_db);
+}
+
 void commentdb_init(F_ValutationList *Head, F_Valutation val, char *title){
     if(*Head==NULL){
         *Head=(F_ValutationList)malloc(sizeof(struct F_ValutationList));
@@ -29,14 +52,6 @@ void commentdb_init(F_ValutationList *Head, F_Valutation val, char *title){
         (*Head)->next=NULL;
         (*Head)->f_valutation->from=find_username(Users, (*Head)->f_valutation->user);
     }else{
-        /*F_ValutationList ptr = *Head;
-        while(ptr->next!=NULL)
-            ptr=ptr->next;
-        ptr->next=(F_ValutationList)malloc(sizeof(struct F_ValutationList));
-        ptr->next->f_valutation=val;
-        ptr->next->next=NULL;
-        ptr->next->f_valutation->from=find_username(Users, (*Head)->f_valutation->user);
-    }*/
         F_ValutationList ptr=(F_ValutationList)malloc(sizeof(struct F_ValutationList));
         ptr->f_valutation=val;
         ptr->f_valutation->from=find_username(Users, val->user);

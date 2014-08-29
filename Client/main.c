@@ -1,11 +1,3 @@
-//
-//  main.c
-//  Client
-//
-//  Created by Vince on 8/19/13.
-//  Copyright (c) 2013 Vince. All rights reserved.
-//
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -75,6 +67,7 @@ int main()
             break;
         }
         buffer[num] = '\0';
+        //system("clear");
         printf("%s", buffer); 
         
         bzero(buffer, N);
