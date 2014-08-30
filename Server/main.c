@@ -22,7 +22,7 @@ User SERVER;
 const char menu[MAXBUF] = "\n 1. Visualizza utenti online \n 2. Visualizza elenco film \n 3. Esci \n > ";
 const char hello[MAXBUF] = "\n## MOVIE RATING SYSTEM ## \n 1. Registrazione \n 2. Login \n 3. Esci \n > ";
 
-void votedb_init(C_ValutationList *Head, char title, int id){
+void votedb_init(C_ValutationList *Head, char* title, int id){
     struct C_Valutation vot;
     char buffer[MAXBUF];
     sprintf(buffer, "%s.%d.rec_vote", title, id);
@@ -62,7 +62,7 @@ void commentdb_init(F_ValutationList *Head, F_Valutation val, char *title){
 
 void filmdb_init(){
     struct Film f;
-    FilmList ptr = Films;
+    //FilmList ptr = Films;
     int filmfile = open("filmdb", O_RDWR|O_CREAT,S_IRUSR|S_IWUSR);
     struct F_Valutation v;
     char buffer[MAXBUF];
@@ -90,7 +90,7 @@ void filmdb_init(){
 void userdb_init(){
     struct User u;
     int userfile = open("userdb", O_RDWR|O_CREAT|O_APPEND,S_IRUSR|S_IWUSR);
-    UserList ptr = NULL;
+    //UserList ptr = NULL;
     while(read(userfile, &u, sizeof(struct User))){
         if(Users == NULL) {
             Users = (UserList)malloc(sizeof(struct UserList));
@@ -155,7 +155,7 @@ int main() {
 
     //Hardcoded parameters
     int argc = 2;
-    char* argv[3];
+    char* argv[4];
     argv[3] = "logfile.txt";
     argv[1] = "4004";
 
@@ -217,7 +217,7 @@ int main() {
 
     // Socket loop
     while (1) {
-        fd = accept(server_socket, (struct sockaddr*)&client, &client_addr_len);
+        fd = accept(server_socket, (struct sockaddr*)&client, (socklen_t *)&client_addr_len);
         pthread_create(&tid, NULL, manage, (void*)&fd);
         pthread_detach(tid);
     }
