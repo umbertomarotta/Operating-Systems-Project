@@ -43,10 +43,11 @@ void manage_user(int fd, int registration) {
         new_user->avg_count = 0;
         new_user->part_avg = 0;
         new_user->u_average = 0;
+        new_user->notif=NULL;
         pthread_mutex_init(&new_user->u_rate_mutex,NULL);
-        
+        pthread_mutex_init(&new_user->u_notif_mutex, NULL);
 
-        
+
         _send(fd, " > Nome: ");
         _recv(fd, buffer, 1);
         if (strcmp(buffer, ":q") == 0) {
@@ -137,7 +138,7 @@ void manage_user(int fd, int registration) {
         strcat(notif, menu);
         _send(user->fd, notif);
         _recv(user->fd, buffer, 1);
-        while (atoi(buffer) <= 0 || atoi(buffer) > 3) {
+        while (atoi(buffer) <= 0 || atoi(buffer) > 4) {
             _send(user->fd, " > ");
             _recv(user->fd, buffer, 1);
         }
@@ -152,12 +153,17 @@ void manage_user(int fd, int registration) {
             }
                 break;
             case 3: {
-                return;
+                show_notifications(user);
+                break;
             }
+            case 4: {
+                user->is_on=0;
+                return;
+                    }
             default:
                 break;
         }
-    } while (choice > 0 && choice < 3);
+    } while (choice > 0 && choice < 5);
     user->is_on=0;
     _infoUser("User logged out.", user->username);
 }
@@ -534,11 +540,6 @@ void add_val(User u, Film f){
     int score;
     memset(buffer, '\0', MAXBUF);   
     F_Valutation new_val = (F_Valutation)malloc(sizeof(struct F_Valutation));
-    /*do{
-        _send(u->fd, " > Select Film: ");
-        _recv(u->fd, buffer, 1);
-        f=find_film(Films, buffer);
-    }while(!f);*/
     _send(u->fd, " > Insert Comment: ");
     _recv(u->fd, buffer, 1);
     strcpy(new_val->comment, buffer);
@@ -562,6 +563,7 @@ void add_val(User u, Film f){
     pthread_mutex_unlock(&f->val_mutex);
     _infoUser("User submitted a new comment", u->username);
     _info("New comment added to database.");
+    notify_users(u, f, new_val);
 }
 
 void Val_add_to(F_ValutationList *LVal, char *title,  F_Valutation new_val){
@@ -617,4 +619,126 @@ int check_ten_minutes(time_t t_val){
     if(difftime(t_val, now)>600)
         return 1;
     else return 0;
+}
+
+UserList create_ulist_unique(F_ValutationList Head){
+    F_ValutationList LVal = Head;
+    UserList u_unique=NULL;
+    while(LVal!=NULL){
+        u_unique=u_enqueue(u_unique, LVal->f_valutation->from);
+        LVal=LVal->next;
+    }
+    return u_unique;
+}
+
+UserList u_enqueue(UserList Head, User u){
+    UserList ptr=Head;
+    if(ptr==NULL){
+        ptr=(UserList)malloc(sizeof(struct UserList));
+        ptr->user=u;
+        return ptr;
+    }else{
+        if(strcmp(u->username, ptr->user->username)==0)
+            return ptr;
+        else{
+            ptr->next=u_enqueue(ptr->next, u);
+        }
+        return ptr;
+    }
+}
+
+
+void add_notif_to(notifications *Head, char *title, F_Valutation val){
+    if(*Head==NULL){
+        *Head=(notifications)malloc(sizeof(struct notification));
+        (*Head)->rec=val;
+        (*Head)->next=NULL;
+        (*Head)->id=0;
+        strcpy((*Head)->title, title);
+    }else{
+        notifications ptr=(notifications)malloc(sizeof(struct notification));
+        ptr->rec=val;
+        strcpy(ptr->title, title);
+        ptr->next=*Head;
+        *Head=ptr;
+        (*Head)->id=(*Head)->next->id+1;
+    }
+}
+
+void notify_users(User u, Film f, F_Valutation val){
+    UserList unique_user_list=create_ulist_unique(f->film_valutations);
+    UserList u_ptr=unique_user_list;
+    while(u_ptr!=NULL){
+        if(strcmp(u->username, u_ptr->user->username)!=0){
+            pthread_mutex_lock(&u_ptr->user->u_notif_mutex);
+            add_notif_to(&u_ptr->user->notif, f->title, val);
+            u_ptr->user->noti_count++;
+            pthread_mutex_unlock(&u_ptr->user->u_notif_mutex);
+        }
+        u_ptr=u_ptr->next;
+    }
+   free_u_list(&unique_user_list);
+}
+
+void free_u_list(UserList *u){
+    if(*u!=NULL){
+        free_u_list(&(*u)->next);
+        (*u)->next=NULL;
+        free(*u);
+    }
+}
+
+F_Valutation find_notif(notifications Head, int id){
+    notifications LNotif = Head;
+    while(LNotif){
+        if(LNotif->id==id)
+            return LNotif->rec;
+        LNotif=LNotif->next;
+    }
+    return NULL;
+}
+
+int show_notifications(User u){
+    if (u->noti_count <=0) return;
+    char buffer[MAXBUF];
+    char b_aux[129];
+    const char c_menu[]="\n 1. Visualizza altri \n 2. Vota Recensione \n 3. Esci \n > ";
+    F_Valutation choice=NULL;
+    bzero(buffer, MAXBUF);
+    bzero(b_aux, 129);
+    notifications LNotif = u->notif;
+    sprintf(b_aux, "\n ## NOTIFICHE ##\n");
+    strcat(buffer, b_aux);
+    while(LNotif != NULL && LNotif->rec != NULL){
+        sprintf(b_aux, "\n %02d [%s] [%s] Ha commentato il film [%s]:\n\t%s [%d]\n",
+                LNotif->id,
+                LNotif->rec->date,
+                LNotif->rec->user,
+                LNotif->title,
+                LNotif->rec->comment, 
+                LNotif->rec->F_score);
+        strcat(buffer, b_aux);
+        strcat(buffer, c_menu);
+        _send(u->fd, buffer);
+        _recv(u->fd, buffer, 1);
+        if(atoi(buffer)==2){
+            vote_comment(u, LNotif->rec, LNotif->title);
+        }else if(atoi(buffer)==3) break;
+        LNotif=LNotif->next;
+        bzero(buffer, MAXBUF);
+    }
+    pthread_mutex_lock(&u->u_notif_mutex);
+    u->noti_count=0;
+    free_notif_list(&u->notif);
+    u->notif=NULL;
+    pthread_mutex_unlock(&u->u_notif_mutex);
+    return 1;
+}
+
+void free_notif_list(notifications *notif){
+    if(*notif!=NULL){
+        free_notif_list(&(*notif)->next);
+        (*notif)->next=NULL;
+        free(*notif);
+    }
 }

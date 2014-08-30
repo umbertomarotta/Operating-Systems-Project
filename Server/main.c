@@ -19,7 +19,7 @@ int logfile;
 User SERVER;
 
 // Static strings
-const char menu[MAXBUF] = "\n 1. Visualizza utenti online \n 2. Visualizza elenco film \n 3. Esci \n > ";
+const char menu[MAXBUF] = "\n 1. Visualizza utenti online \n 2. Visualizza elenco film \n 3. Visualizza Notifiche \n 4. Esci \n > ";
 const char hello[MAXBUF] = "\n## MOVIE RATING SYSTEM ## \n 1. Registrazione \n 2. Login \n 3. Esci \n > ";
 
 void votedb_init(C_ValutationList *Head, char* title, int id){
@@ -58,6 +58,7 @@ void commentdb_init(F_ValutationList *Head, F_Valutation val, char *title){
         ptr->next=*Head;
         *Head=ptr;
     }
+    votedb_init(&val->CommentScores, title, val->id);
 }
 
 void filmdb_init(){

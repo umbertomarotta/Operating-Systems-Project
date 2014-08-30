@@ -1045,3 +1045,29 @@
 [ INFO @ Fri 2014-08-29 23:03:04 CEST - User: n0tsaved ]: User voted a comment 
 [ INFO @ Fri 2014-08-29 23:03:11 CEST - User: n0tsaved ]: User voted a comment 
 [ INFO @ Fri 2014-08-29 23:03:38 CEST - User: kingbastard ]: User voted a comment 
+[ INFO @ Sat 2014-08-30 23:46:41 CEST ]: Server initalized. 
+[ INFO @ Sat 2014-08-30 23:46:41 CEST ]: Server listening and waiting connections. 
+[ INFO @ Sat 2014-08-30 23:46:45 CEST ]: New thread created 
+[ INFO @ Sat 2014-08-30 23:46:56 CEST ]: New thread created 
+[ INFO @ Sat 2014-08-30 23:46:57 CEST ]: Serving the registration form. 
+[ INFO @ Sat 2014-08-30 23:47:06 CEST - User: n0tsaved ]: New user created. 
+[ INFO @ Sat 2014-08-30 23:47:06 CEST - User: n0tsaved ]: User logged in. 
+[ INFO @ Sat 2014-08-30 23:47:31 CEST ]: New film added to database. 
+[ INFO @ Sat 2014-08-30 23:47:40 CEST ]: New film added to database. 
+[ INFO @ Sat 2014-08-30 23:47:55 CEST - User: n0tsaved ]: User submitted a new comment 
+[ INFO @ Sat 2014-08-30 23:47:55 CEST ]: New comment added to database. 
+[ INFO @ Sat 2014-08-30 23:48:17 CEST - User: n0tsaved ]: User submitted a new comment 
+[ INFO @ Sat 2014-08-30 23:48:17 CEST ]: New comment added to database. 
+[ INFO @ Sat 2014-08-30 23:48:21 CEST ]: New thread created 
+[ INFO @ Sat 2014-08-30 23:48:27 CEST ]: New thread created 
+[ INFO @ Sat 2014-08-30 23:48:30 CEST ]: Serving the registration form. 
+[ INFO @ Sat 2014-08-30 23:48:38 CEST - User: king ]: New user created. 
+[ INFO @ Sat 2014-08-30 23:48:38 CEST - User: king ]: User logged in. 
+[ INFO @ Sat 2014-08-30 23:48:58 CEST - User: king ]: User voted a comment 
+[ INFO @ Sat 2014-08-30 23:49:05 CEST - User: king ]: User submitted a new comment 
+[ INFO @ Sat 2014-08-30 23:49:05 CEST ]: New comment added to database. 
+[ INFO @ Sat 2014-08-30 23:49:31 CEST - User: n0tsaved ]: User voted a comment 
+[ INFO @ Sat 2014-08-30 23:49:51 CEST - User: king ]: User voted a comment 
+[ INFO @ Sat 2014-08-30 23:50:08 CEST - User: king ]: User submitted a new comment 
+[ INFO @ Sat 2014-08-30 23:50:08 CEST ]: New comment added to database. 
+[ INFO @ Sat 2014-08-30 23:50:20 CEST - User: n0tsaved ]: User voted a comment 

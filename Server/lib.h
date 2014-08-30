@@ -13,6 +13,7 @@ typedef struct F_ValutationList* F_ValutationList;
 typedef struct F_Valutation* F_Valutation;
 typedef struct C_Valutation* C_Valutation;
 typedef struct C_ValutationList* C_ValutationList;
+typedef struct notification* notifications;
 
 
 
@@ -27,7 +28,9 @@ struct User{
     int part_avg;
     float u_average;
     int is_on;
+    notifications notif;
     pthread_mutex_t u_rate_mutex;
+    pthread_mutex_t u_notif_mutex;
 };
 
 
@@ -81,6 +84,13 @@ struct C_ValutationList{
     struct C_ValutationList *next;
 };
 
+struct notification{
+    int id;
+    F_Valutation rec;
+    char title[33];
+    struct notification* next;
+};
+
 extern UserList Users;
 extern FilmList Films;
 extern pthread_mutex_t users_mutex;
@@ -115,5 +125,12 @@ void vote_comment(User u, F_Valutation f, char *title);
 void C_Val_add_to(C_ValutationList *CVal, C_Valutation new_vote, int id, char *title);
 C_Valutation find_vote(C_ValutationList, User u);
 int check_ten_minutes(time_t now);
+UserList create_ulist_unique(F_ValutationList Head);
+UserList u_enqueue(UserList Head, User u);
+void notify_users(User u, Film f, F_Valutation val);
+void add_notif_to(notifications *Head, char* title, F_Valutation val);
+void free_u_list(UserList *u);
+int show_notifications(User u);
+void free_notif_list(notifications *notif);
 
 #endif
