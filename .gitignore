@@ -5,8 +5,32 @@
 
 *.swp
 
+Client/cli
+
 Client/bin/Debug/client
+
+Client/DerivedData
+
+Client/Client.xcodeproj
 
 Server/bin/Debug/server
 
+Server/DerivedData
+
+Server/Server.xcodeproj
+
+Server/serv
+
 *.depend
+
+*.hmap
+
+*.dep
+
+*.xcindexdb-shm
+
+*.xcindexdb
+
+
+
+*.rec_vote
