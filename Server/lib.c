@@ -158,6 +158,7 @@ void manage_user(int fd, int registration) {
             }
             case 4: {
                 user->is_on=0;
+                update_u_db();
                 return;
                     }
             default:
@@ -403,12 +404,11 @@ F_Valutation find_valutation(F_ValutationList Head, int id){
 void vote_comment(User u, F_Valutation Valutation, char *title){
     C_Valutation c = find_vote(Valutation->CommentScores, u);
     if(c!=NULL)
-        if(!check_ten_minutes(c->tim)){
-            _send(u->fd," > You must wait 10 minutes to rate this comment.\n ");
+        if(difftime(time(NULL), c->tim)<600){
+            _send(u->fd," > You must wait 10 minutes to rate this comment. ");
             return;
         }
     char buffer[MAXBUF];
-    time_t now = time(NULL);
     int score;
     memset(buffer, '\0', MAXBUF);   
     C_Valutation new_vote = (C_Valutation)malloc(sizeof(struct C_Valutation));
@@ -419,7 +419,7 @@ void vote_comment(User u, F_Valutation Valutation, char *title){
     }while(score<0 || score >5);
     new_vote->C_score=score;
     strcpy(new_vote->user,u->username);
-    new_vote->tim=now;
+    new_vote->tim=time(NULL);
     pthread_mutex_lock(&Valutation->comm_vote_mutex);
     pthread_mutex_lock(&Valutation->from->u_rate_mutex);
     Valutation->from->avg_count++;
@@ -600,7 +600,7 @@ void C_Val_add_to(C_ValutationList *CVal, C_Valutation new_vote, int id, char *t
         node->next=*CVal;
         *CVal=node;
     }    
-    write(rec_votations, (*CVal)->c_valutation, sizeof(struct C_Valutation));
+    write(rec_votations, new_vote, sizeof(struct C_Valutation));
     close(rec_votations);
 }
 
@@ -700,6 +700,7 @@ F_Valutation find_notif(notifications Head, int id){
 
 int show_notifications(User u){
     if (u->noti_count <=0) return;
+    //else if(u->notif=NULL) { u->noti_count = 0; return; }
     char buffer[MAXBUF];
     char b_aux[129];
     const char c_menu[]="\n 1. Visualizza altri \n 2. Vota Recensione \n 3. Esci \n > ";
@@ -729,7 +730,7 @@ int show_notifications(User u){
     }
     pthread_mutex_lock(&u->u_notif_mutex);
     u->noti_count=0;
-    free_notif_list(&u->notif);
+    if(u->notif!=NULL) free_notif_list(&u->notif);
     u->notif=NULL;
     pthread_mutex_unlock(&u->u_notif_mutex);
     return 1;
