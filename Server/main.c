@@ -109,12 +109,14 @@ void userdb_init(){
             Users->user = (User)malloc(sizeof(struct User));
             memcpy(Users->user, &u, sizeof(struct User));
             Users->next=NULL;
+            Users->user->notif=NULL;
         } else {
             UserList N = (UserList)malloc(sizeof(struct UserList));
             N->user = (User)malloc(sizeof(struct User));
             memcpy(N->user, &u, sizeof(struct User));
             N->next=Users;
             Users=N;
+            Users->user->notif=NULL;
         }
     }
     close(userfile);

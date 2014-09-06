@@ -1346,3 +1346,60 @@
 [ INFO @ Sat 2014-09-06 21:24:29 CEST - User: king ]: User voted a comment 
 [ INFO @ Sat 2014-09-06 21:24:59 CEST ]: New thread created 
 [ INFO @ Sat 2014-09-06 21:25:05 CEST - User: n0tsaved ]: User logged in. 
+[ INFO @ Sat 2014-09-06 21:38:43 CEST ]: Server initalized. 
+[ INFO @ Sat 2014-09-06 21:38:43 CEST ]: Server listening and waiting connections. 
+[ INFO @ Sat 2014-09-06 21:38:54 CEST ]: New thread created 
+[ INFO @ Sat 2014-09-06 21:38:55 CEST ]: Serving the registration form. 
+[ INFO @ Sat 2014-09-06 21:39:03 CEST - User: terzoutente ]: New user created. 
+[ INFO @ Sat 2014-09-06 21:39:03 CEST - User: terzoutente ]: User logged in. 
+[ INFO @ Sat 2014-09-06 21:39:43 CEST - User: terzoutente ]: User submitted a new comment 
+[ INFO @ Sat 2014-09-06 21:39:43 CEST ]: New comment added to database. 
+[ INFO @ Sat 2014-09-06 21:40:28 CEST ]: New thread created 
+[ INFO @ Sat 2014-09-06 21:40:37 CEST - User: n0tsaved ]: User logged in. 
+[ INFO @ Sat 2014-09-06 21:40:53 CEST - User: n0tsaved ]: User voted a comment 
+[ INFO @ Sat 2014-09-06 21:41:33 CEST ]: Server initalized. 
+[ INFO @ Sat 2014-09-06 21:41:34 CEST ]: Server initalized. 
+[ INFO @ Sat 2014-09-06 21:41:37 CEST ]: Server initalized. 
+[ INFO @ Sat 2014-09-06 21:41:37 CEST ]: Server listening and waiting connections. 
+[ INFO @ Sat 2014-09-06 21:41:55 CEST ]: New thread created 
+[ INFO @ Sat 2014-09-06 21:41:58 CEST ]: New thread created 
+[ INFO @ Sat 2014-09-06 21:42:04 CEST - User: king ]: User logged in. 
+[ INFO @ Sat 2014-09-06 21:42:42 CEST ]: Server initalized. 
+[ INFO @ Sat 2014-09-06 21:42:45 CEST ]: Server initalized. 
+[ INFO @ Sat 2014-09-06 21:42:45 CEST ]: Server listening and waiting connections. 
+[ INFO @ Sat 2014-09-06 21:42:55 CEST ]: New thread created 
+[ INFO @ Sat 2014-09-06 21:42:59 CEST - User: king ]: User logged in. 
+[ INFO @ Sat 2014-09-06 21:44:51 CEST ]: Server initalized. 
+[ INFO @ Sat 2014-09-06 21:44:51 CEST ]: Server listening and waiting connections. 
+[ INFO @ Sat 2014-09-06 21:44:54 CEST ]: New thread created 
+[ INFO @ Sat 2014-09-06 21:44:59 CEST - User: king ]: User logged in. 
+[ INFO @ Sat 2014-09-06 21:45:13 CEST ]: New thread created 
+[ INFO @ Sat 2014-09-06 21:45:17 CEST - User: terzoutente ]: User logged in. 
+[ INFO @ Sat 2014-09-06 21:45:31 CEST - User: terzoutente ]: User submitted a new comment 
+[ INFO @ Sat 2014-09-06 21:45:31 CEST ]: New comment added to database. 
+[ INFO @ Sat 2014-09-06 21:46:19 CEST - User: terzoutente ]: User submitted a new comment 
+[ INFO @ Sat 2014-09-06 21:46:19 CEST ]: New comment added to database. 
+[ INFO @ Sat 2014-09-06 21:49:44 CEST ]: Server initalized. 
+[ INFO @ Sat 2014-09-06 21:49:47 CEST ]: Server initalized. 
+[ INFO @ Sat 2014-09-06 21:49:47 CEST ]: Server listening and waiting connections. 
+[ INFO @ Sat 2014-09-06 21:50:00 CEST ]: New thread created 
+[ INFO @ Sat 2014-09-06 21:50:07 CEST - User: terzoutente ]: User logged in. 
+[ INFO @ Sat 2014-09-06 21:50:41 CEST - User: terzoutente ]: User submitted a new comment 
+[ INFO @ Sat 2014-09-06 21:50:41 CEST ]: New comment added to database. 
+[ INFO @ Sat 2014-09-06 21:50:51 CEST ]: New thread created 
+[ INFO @ Sat 2014-09-06 21:50:54 CEST - User: king ]: User logged in. 
+[ INFO @ Sat 2014-09-06 21:51:14 CEST - User: king ]: User submitted a new comment 
+[ INFO @ Sat 2014-09-06 21:51:14 CEST ]: New comment added to database. 
+[ INFO @ Sat 2014-09-06 21:53:02 CEST ]: Server initalized. 
+[ INFO @ Sat 2014-09-06 21:53:02 CEST ]: Server listening and waiting connections. 
+[ INFO @ Sat 2014-09-06 21:53:11 CEST ]: New thread created 
+[ INFO @ Sat 2014-09-06 21:53:14 CEST - User: king ]: User logged in. 
+[ INFO @ Sat 2014-09-06 21:53:48 CEST - User: king ]: User submitted a new comment 
+[ INFO @ Sat 2014-09-06 21:53:48 CEST ]: New comment added to database. 
+[ INFO @ Sat 2014-09-06 21:53:56 CEST ]: New thread created 
+[ INFO @ Sat 2014-09-06 21:54:00 CEST - User: terzoutente ]: User logged in. 
+[ INFO @ Sat 2014-09-06 21:54:13 CEST - User: terzoutente ]: User voted a comment 
+[ INFO @ Sat 2014-09-06 21:54:38 CEST ]: New thread created 
+[ INFO @ Sat 2014-09-06 21:54:43 CEST - User: n0tsaved ]: User logged in. 
+[ INFO @ Sat 2014-09-06 21:55:02 CEST - User: n0tsaved ]: User submitted a new comment 
+[ INFO @ Sat 2014-09-06 21:55:02 CEST ]: New comment added to database. 

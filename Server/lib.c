@@ -159,7 +159,7 @@ void manage_user(int fd, int registration) {
             case 4: {
                 user->is_on=0;
                 update_u_db();
-                pthread_exit(0);
+                return;
                     }
             default:
                 break;
@@ -704,7 +704,7 @@ F_Valutation find_notif(notifications Head, int id){
 
 int show_notifications(User u){
     if (u->noti_count <=0) return;
-    //else if(u->notif=NULL) { u->noti_count = 0; return; }
+    else if(u->notif==NULL) { u->noti_count = 0; return; }
     char buffer[MAXBUF];
     char b_aux[129];
     const char c_menu[]="\n 1. Visualizza altri \n 2. Vota Recensione \n 3. Esci \n > ";
