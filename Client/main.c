@@ -18,14 +18,15 @@ void sig_func(int sig) {
     exit(0);
 }
 
-int main(int argc, const char * argv[])
+//int main(int argc, const char * argv[])
+int main()
 {
-/*    //Hardcoded parameters
+    //Hardcoded parameters
     int argc = 3;
     char* argv[3];
     argv[2] = "4004";
     argv[1] = "localhost";
-*/
+
     long num;
     int portno;
     struct sockaddr_in sin;

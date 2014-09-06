@@ -232,6 +232,7 @@ User find_username(UserList U, char *new_user){
 
         }
     }
+    return NULL;
 }
 
 Film find_film(char *f_title){
@@ -704,12 +705,12 @@ F_Valutation find_notif(notifications Head, int id){
 }
 
 int show_notifications(User u){
-    if (u->noti_count <=0) return;
+    if (u->noti_count <=0) return 1;
     //else if(u->notif=NULL) { u->noti_count = 0; return; }
     char buffer[MAXBUF];
     char b_aux[129];
     const char c_menu[]="\n 1. Visualizza altri \n 2. Vota Recensione \n 3. Esci \n > ";
-    F_Valutation choice=NULL;
+    //F_Valutation choice = NULL;
     bzero(buffer, MAXBUF);
     bzero(b_aux, 129);
     notifications LNotif = u->notif;
