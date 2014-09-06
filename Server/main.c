@@ -151,15 +151,14 @@ void *manage(void *arg) {
 
 
 // Main Function
-//int main(int argc, const char * argv[]) {
-int main() {
+int main(int argc, const char * argv[]) {
 
-    //Hardcoded parameters
+/*    //Hardcoded parameters
     int argc = 2;
     char* argv[4];
     argv[3] = "logfile.txt";
     argv[1] = "4004";
-
+*/
     // Declaring some variables
     int server_socket,
         port_no,

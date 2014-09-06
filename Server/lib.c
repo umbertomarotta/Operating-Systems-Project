@@ -624,9 +624,10 @@ int check_ten_minutes(time_t t_val){
 UserList create_ulist_unique(F_ValutationList Head){
     F_ValutationList LVal = Head;
     UserList u_unique=NULL;
-    while(LVal!=NULL){
+    while(LVal!=NULL && LVal->f_valutation!=NULL){
         u_unique=u_enqueue(u_unique, LVal->f_valutation->from);
         LVal=LVal->next;
+        fprintf(stderr, "create_ulist\n");
     }
     return u_unique;
 }
@@ -666,8 +667,10 @@ void add_notif_to(notifications *Head, char *title, F_Valutation val){
 }
 
 void notify_users(User u, Film f, F_Valutation val){
+    fprintf(stderr, "riesco a creare sta lista?\n");
     UserList unique_user_list=create_ulist_unique(f->film_valutations);
     UserList u_ptr=unique_user_list;
+    fprintf(stderr, "bo\n");
     while(u_ptr!=NULL){
         if(strcmp(u->username, u_ptr->user->username)!=0){
             pthread_mutex_lock(&u_ptr->user->u_notif_mutex);
@@ -677,7 +680,9 @@ void notify_users(User u, Film f, F_Valutation val){
         }
         u_ptr=u_ptr->next;
     }
+    fprintf(stderr, "gnac\n");
    free_u_list(&unique_user_list);
+   fprintf(stderr, "ci arrivo qua?\n");
 }
 
 void free_u_list(UserList *u){
