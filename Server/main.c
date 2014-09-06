@@ -22,6 +22,17 @@ User SERVER;
 const char menu[MAXBUF] = "\n 1. Visualizza utenti online \n 2. Visualizza elenco film \n 3. Visualizza Notifiche \n 4. Esci \n > ";
 const char hello[MAXBUF] = "\n## MOVIE RATING SYSTEM ## \n 1. Registrazione \n 2. Login \n 3. Esci \n > ";
 
+void clean_quit(int sig){
+    UserList ptr = Users;
+    fprintf(stderr, "Caught signal %d. \n Closing all Connections..\n", sig);
+    while(ptr!=NULL){
+        ptr->user->is_on=0;
+        //close(ptr->user->fd);
+    }
+    //update_u_db();
+    exit(1);
+}
+
 void votedb_init(C_ValutationList *Head, char* title, int id){
     struct C_Valutation vot;
     char buffer[MAXBUF];
@@ -211,6 +222,7 @@ int main(int argc, const char * argv[]) {
 
     // Ignore SIGPIPE is always good
     signal(SIGPIPE, SIG_IGN);
+    //signal(SIGINT, clean_quit);
 
     client_addr_len = sizeof(client);
 

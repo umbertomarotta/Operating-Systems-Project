@@ -159,7 +159,7 @@ void manage_user(int fd, int registration) {
             case 4: {
                 user->is_on=0;
                 update_u_db();
-                return;
+                pthread_exit(0);
                     }
             default:
                 break;
@@ -339,7 +339,9 @@ void show_online_users(User user){
         strcat(buffer, aux);       
         u=u->next;
     }
+    strcat(buffer, "\n\nPremi un tasto per continuare... ");
     _send(user->fd, buffer);
+    _recv(user->fd, buffer, 1);
 }
 
 void show_film(User u){
@@ -360,7 +362,9 @@ void show_film(User u){
         strcat(buffer, aux);
         f=f->next;
     }
+    strcat(buffer, "\nPremi un tasto per continuare... ");
     _send(u->fd, buffer);
+    _recv(u->fd, buffer, 1);
     int choice;
     do{
         memset(buffer, '\0', MAXBUF);
@@ -627,7 +631,6 @@ UserList create_ulist_unique(F_ValutationList Head){
     while(LVal!=NULL && LVal->f_valutation!=NULL){
         u_unique=u_enqueue(u_unique, LVal->f_valutation->from);
         LVal=LVal->next;
-        fprintf(stderr, "create_ulist\n");
     }
     return u_unique;
 }
@@ -667,10 +670,8 @@ void add_notif_to(notifications *Head, char *title, F_Valutation val){
 }
 
 void notify_users(User u, Film f, F_Valutation val){
-    fprintf(stderr, "riesco a creare sta lista?\n");
     UserList unique_user_list=create_ulist_unique(f->film_valutations);
     UserList u_ptr=unique_user_list;
-    fprintf(stderr, "bo\n");
     while(u_ptr!=NULL){
         if(strcmp(u->username, u_ptr->user->username)!=0){
             pthread_mutex_lock(&u_ptr->user->u_notif_mutex);
@@ -680,9 +681,7 @@ void notify_users(User u, Film f, F_Valutation val){
         }
         u_ptr=u_ptr->next;
     }
-    fprintf(stderr, "gnac\n");
    free_u_list(&unique_user_list);
-   fprintf(stderr, "ci arrivo qua?\n");
 }
 
 void free_u_list(UserList *u){
