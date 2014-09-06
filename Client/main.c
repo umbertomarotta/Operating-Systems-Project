@@ -95,6 +95,7 @@ int main()
         
         //ffflush();
         //clear_screen();
+        if(DEBAG) printf("WAITNG\n");
         num = read(c_fd, buffer, sizeof(buffer));
         if (num <=0) {
             printf("Connection closed.");
@@ -111,12 +112,13 @@ int main()
         bzero(buffer, N);
         fgets(buffer, N, stdin);
         size_t len = strlen(buffer);
-        while (len == 1 && buffer[0] == '\n') {
-            printf(" > ");
-            bzero(buffer, N);
-            fgets(buffer, N, stdin);
-            len = strlen(buffer);
-        }
+//        while (len == 1 && buffer[0] == '\n') {
+//            printf(" > ");
+//            bzero(buffer, N);
+//            fgets(buffer, N, stdin);
+//            len = strlen(buffer);
+//        }
+        if (buffer[0] == '\n') buffer[0] = '0';
         if (len > 0 && buffer[len-1] == '\n') {
             buffer[len-1] = '\0';
         }
@@ -128,7 +130,7 @@ int main()
         }
         if(DEBAG) printf("SENT [%s]\n", buffer);
         flush_buffer(buffer);
-        aspetta(2);
+        //aspetta(2);
     }
     close(c_fd);
     return 0;

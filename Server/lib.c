@@ -10,13 +10,44 @@
 
 #define DEBAG 1
 
+#define IDLE 0
+#define SENDING 1
+#define RECEIVING 2
+
+int status[5000];
+
 // SAFER SEND AND RECV
 void _send(int fd, const void* buffer) {
     // We will close the connection if the buffer received is lte 0
-    if (send(fd, buffer, strlen((char*)buffer), 0) <= 0) {
-        close(fd);
-        pthread_exit(0);
+    if (status[fd] == SENDING){
+        char trash[MAXBUF+1];
+        if(DEBAG) printf("WAITNG TRASH\n");
+        long char_read = recv(fd, trash, MAXBUF, 0);
+        if(DEBAG) printf("TRASHED\n");
+        if (char_read <= 0){
+            status[fd] = IDLE;
+            close(fd);
+            if(DEBAG) printf("CLOSING\n");
+            pthread_exit(0);
+        }
     }
+    if(DEBAG) printf("SENDING\n");
+    if (strcmp(buffer, "") == 0){
+        if (send(fd, "\nNone\n", strlen((char*)"\nNone\n"), 0) <= 0) {
+            close(fd);
+            if(DEBAG) printf("CLOSING\n");
+            pthread_exit(0);
+        };
+    }
+    else{
+        if (send(fd, buffer, strlen((char*)buffer), 0) <= 0) {
+            close(fd);
+            if(DEBAG) printf("CLOSING\n");
+            pthread_exit(0);
+        };
+    }
+    if(DEBAG) printf("SENT\n");
+    status[fd] = SENDING;
 }
 
 void flush_buffer(char buffer[]){
@@ -28,11 +59,19 @@ void flush_buffer(char buffer[]){
 }
 
 void _recv(int fd, char buffer[], int be_string) {
+    if (status[fd] == RECEIVING){
+        if(DEBAG) printf("SENDING TRASH\n");
+        send(fd, "\0", strlen((char*)"\0"), 0);
+        if(DEBAG) printf("SENT\n");
+    }
     //_send(fd, "TELLME");
-    flush_buffer(buffer);
     memset(buffer, 0, MAXBUF);
+    flush_buffer(buffer);
+    if(DEBAG) printf("WAITNG\n");
     long char_read = recv(fd, buffer, MAXBUF, 0);
+    if(DEBAG) printf("GOT [%s]\n", buffer);
     if (char_read <= 0){
+        status[fd] = IDLE;
         close(fd);
         pthread_exit(0);
     }
@@ -42,10 +81,11 @@ void _recv(int fd, char buffer[], int be_string) {
     if (be_string == 0) {
         ((char*)(buffer))[char_read] = '\0';
     }
-    if(DEBAG) printf("REC [%s]\n", buffer);
+    status[fd] = RECEIVING;
 }
 
 void manage_user(int fd, int registration) {
+    status[fd] = IDLE;
     User user = NULL;
     char buffer[MAXBUF+1];
     if (registration == 1) {
