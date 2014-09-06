@@ -18,6 +18,11 @@ void sig_func(int sig) {
     exit(0);
 }
 
+void ffflush(){
+    while (getchar() != '\n');
+    return;
+}
+
 //int main(int argc, const char * argv[])
 int main()
 {
@@ -76,6 +81,7 @@ int main()
         while (len == 1 && buffer[0] == '\n') {
             printf(" > ");
             bzero(buffer, N);
+            ffflush();
             fgets(buffer, N, stdin);
             len = strlen(buffer);
         }
