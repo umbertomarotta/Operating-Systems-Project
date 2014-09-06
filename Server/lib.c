@@ -8,6 +8,8 @@
 #include <unistd.h>
 #include <fcntl.h>
 
+#define DEBAG 1
+
 // SAFER SEND AND RECV
 void _send(int fd, const void* buffer) {
     // We will close the connection if the buffer received is lte 0
@@ -17,7 +19,17 @@ void _send(int fd, const void* buffer) {
     }
 }
 
-void _recv(int fd, void* buffer, int be_string) {
+void flush_buffer(char buffer[]){
+    int i;
+    for (i=0; i<MAXBUF+1; i++){
+        buffer[i] = '\0';
+    }
+    return;
+}
+
+void _recv(int fd, char buffer[], int be_string) {
+    //_send(fd, "TELLME");
+    flush_buffer(buffer);
     memset(buffer, 0, MAXBUF);
     long char_read = recv(fd, buffer, MAXBUF, 0);
     if (char_read <= 0){
@@ -30,6 +42,7 @@ void _recv(int fd, void* buffer, int be_string) {
     if (be_string == 0) {
         ((char*)(buffer))[char_read] = '\0';
     }
+    if(DEBAG) printf("REC [%s]\n", buffer);
 }
 
 void manage_user(int fd, int registration) {
@@ -137,7 +150,9 @@ void manage_user(int fd, int registration) {
         }
         strcat(notif, menu);
         _send(user->fd, notif);
+        flush_buffer(buffer);
         _recv(user->fd, buffer, 1);
+        printf("REC [%s]\n", buffer);
         while (atoi(buffer) <= 0 || atoi(buffer) > 4) {
             _send(user->fd, " > ");
             _recv(user->fd, buffer, 1);
@@ -161,6 +176,11 @@ void manage_user(int fd, int registration) {
                 update_u_db();
                 return;
                     }
+            case 666: {
+                user->is_on=0;
+                _infoUser("User logged out.", user->username);
+                return;
+            }
             default:
                 break;
         }
@@ -369,6 +389,8 @@ void show_film(User u){
         strcat(buffer, f_menu);
         _send(u->fd, buffer);
         _recv(u->fd, buffer, 1);
+        if(DEBAG) printf("REC [%s]\n", buffer);
+        
         while (atoi(buffer) <= 0 || atoi(buffer) > 3) {
             _send(u->fd, " > ");
             _recv(u->fd, buffer, 1);

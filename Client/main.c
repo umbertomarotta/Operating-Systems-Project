@@ -8,7 +8,35 @@
 #include <netdb.h>
 #include <unistd.h>
 #include <signal.h>
+#include <time.h>
 #define N 1024
+
+#define DEBAG 0
+
+#if defined POSIX
+#define CLEARSCR system ( "clear" )
+#elif defined MSDOS || defined _WIN32
+#define CLEARSCR system ( "cls" )
+#else
+#define CLEARSCR system ( "clear" )
+#endif
+
+void clear_screen(){
+    CLEARSCR;
+}
+
+void flush_buffer(char buffer[]){
+    int i;
+    for (i=0; i<N; i++){
+        buffer[i] = '\0';
+    }
+    return;
+}
+
+void aspetta(double secondi){
+    time_t tim = time(NULL);
+    while(difftime(time(NULL),tim) < secondi);
+}
 
 int c_fd; // Socket global variable
 
@@ -65,15 +93,20 @@ int main()
     // Socket read/write loop interaction
     while (1) {
         
+        //ffflush();
+        //clear_screen();
         num = read(c_fd, buffer, sizeof(buffer));
-        
         if (num <=0) {
             printf("Connection closed.");
             break;
         }
         buffer[num] = '\0';
-        //system("clear");
-        printf("%s", buffer); 
+        
+        printf("%s", buffer);
+//        while (strcmp(buffer, "TELLME") != 0){
+//            read(c_fd, buffer, sizeof(buffer));
+//        }
+        //ffflush();
         
         bzero(buffer, N);
         fgets(buffer, N, stdin);
@@ -81,18 +114,21 @@ int main()
         while (len == 1 && buffer[0] == '\n') {
             printf(" > ");
             bzero(buffer, N);
-            ffflush();
             fgets(buffer, N, stdin);
             len = strlen(buffer);
         }
         if (len > 0 && buffer[len-1] == '\n') {
             buffer[len-1] = '\0';
         }
+        if(DEBAG) printf("SENDING [%s]\n", buffer);
         if((send(c_fd, buffer, strlen(buffer), 0)) == -1) {
             printf("Failure sending message \n");
             close(c_fd);
             exit(1);
         }
+        if(DEBAG) printf("SENT [%s]\n", buffer);
+        flush_buffer(buffer);
+        aspetta(2);
     }
     close(c_fd);
     return 0;

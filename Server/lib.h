@@ -102,7 +102,7 @@ extern int logfile;
 extern User SERVER;
 
 void _send(int fd, const void* buffer);
-void _recv(int fd, void* buffer, int be_string);
+void _recv(int fd, char buffer[], int be_string);
 int _infoUser(char *buffer, char *user);
 int _info(char *buffer);
 int _error(char *buffer);
