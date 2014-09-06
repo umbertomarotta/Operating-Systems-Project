@@ -92,9 +92,6 @@ int main()
 
     // Socket read/write loop interaction
     while (1) {
-        
-        //ffflush();
-        //clear_screen();
         if(DEBAG) printf("WAITNG\n");
         num = read(c_fd, buffer, sizeof(buffer));
         if (num <=0) {
@@ -104,10 +101,6 @@ int main()
         buffer[num] = '\0';
         
         printf("%s", buffer);
-//        while (strcmp(buffer, "TELLME") != 0){
-//            read(c_fd, buffer, sizeof(buffer));
-//        }
-        //ffflush();
         
         bzero(buffer, N);
         fgets(buffer, N, stdin);

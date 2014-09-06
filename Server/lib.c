@@ -33,7 +33,8 @@ void _send(int fd, const void* buffer) {
     }
     if(DEBAG) printf("SENDING\n");
     if (strcmp(buffer, "") == 0){
-        if (send(fd, "\nNone\n", strlen((char*)"\nNone\n"), 0) <= 0) {
+        char string[] = "\nNone\n";
+        if (send(fd, string, strlen((char*)string), 0) <= 0) {
             close(fd);
             if(DEBAG) printf("CLOSING\n");
             pthread_exit(0);
@@ -557,13 +558,14 @@ int show_film_valutation(User u, Film f){
 
 
 void show_f_val(User u){
+    int fd = u->fd;
     char buffer[MAXBUF];
     Film f=NULL;
     const char v_menu[]= "\n 1. Commenta Film \n 2. Esci \n > ";
     memset(buffer, '\0', MAXBUF);
     do{
-        _send(u->fd, " > Select Title: ");
-        _recv(u->fd, buffer, 1);
+        _send(fd, " > Select Title: ");
+        _recv(fd, buffer, 1);
         f=find_film(buffer);
     }while(f==NULL && strcmp(buffer,":quit")); 
     int choice;
@@ -572,11 +574,11 @@ void show_f_val(User u){
         memset(buffer, '\0', MAXBUF);
         sprintf(buffer, "\n## RATING SYSTEM MENU > FILM > COMMENTI [%s] ##", f->title);
         strcat(buffer, v_menu);
-        _send(u->fd, buffer);
-        _recv(u->fd, buffer, 1);
+        _send(fd, buffer);
+        _recv(fd, buffer, 1);
         while (atoi(buffer) <= 0 || atoi(buffer) > 2) {
-            _send(u->fd, " > ");
-            _recv(u->fd, buffer, 1);
+            _send(fd, " > ");
+            _recv(fd, buffer, 1);
         }
         choice = atoi(buffer);
         switch (choice) {
