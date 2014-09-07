@@ -1403,3 +1403,84 @@
 [ INFO @ Sat 2014-09-06 21:54:43 CEST - User: n0tsaved ]: User logged in. 
 [ INFO @ Sat 2014-09-06 21:55:02 CEST - User: n0tsaved ]: User submitted a new comment 
 [ INFO @ Sat 2014-09-06 21:55:02 CEST ]: New comment added to database. 
+[ INFO @ Sun 2014-09-07 02:13:37 CEST ]: Server initalized. 
+[ INFO @ Sun 2014-09-07 02:13:37 CEST ]: Server listening and waiting connections. 
+[ INFO @ Sun 2014-09-07 02:13:52 CEST ]: New thread created 
+[ INFO @ Sun 2014-09-07 02:13:56 CEST - User: king ]: User logged in. 
+[ INFO @ Sun 2014-09-07 02:16:03 CEST ]: Server initalized. 
+[ INFO @ Sun 2014-09-07 02:16:03 CEST ]: Server listening and waiting connections. 
+[ INFO @ Sun 2014-09-07 02:16:08 CEST ]: New thread created 
+[ INFO @ Sun 2014-09-07 02:16:13 CEST - User: king ]: User logged in. 
+[ INFO @ Sun 2014-09-07 02:16:29 CEST - User: king ]: User submitted a new comment 
+[ INFO @ Sun 2014-09-07 02:16:29 CEST ]: New comment added to database. 
+[ INFO @ Sun 2014-09-07 02:17:34 CEST ]: Server initalized. 
+[ INFO @ Sun 2014-09-07 02:17:49 CEST ]: Server initalized. 
+[ INFO @ Sun 2014-09-07 02:17:49 CEST ]: Server listening and waiting connections. 
+[ INFO @ Sun 2014-09-07 02:18:25 CEST ]: New thread created 
+[ INFO @ Sun 2014-09-07 02:18:39 CEST ]: New thread created 
+[ INFO @ Sun 2014-09-07 02:18:48 CEST ]: New thread created 
+[ INFO @ Sun 2014-09-07 02:18:49 CEST ]: Serving the registration form. 
+[ INFO @ Sun 2014-09-07 02:18:53 CEST - User: king ]: New user created. 
+[ INFO @ Sun 2014-09-07 02:18:53 CEST - User: king ]: User logged in. 
+[ INFO @ Sun 2014-09-07 02:19:00 CEST ]: Serving the registration form. 
+[ INFO @ Sun 2014-09-07 02:19:06 CEST - User: n0t ]: New user created. 
+[ INFO @ Sun 2014-09-07 02:19:06 CEST - User: n0t ]: User logged in. 
+[ INFO @ Sun 2014-09-07 02:19:13 CEST ]: New thread created 
+[ INFO @ Sun 2014-09-07 02:19:15 CEST ]: Serving the registration form. 
+[ INFO @ Sun 2014-09-07 02:19:22 CEST - User: terzo ]: New user created. 
+[ INFO @ Sun 2014-09-07 02:19:22 CEST - User: terzo ]: User logged in. 
+[ INFO @ Sun 2014-09-07 02:19:50 CEST ]: New film added to database. 
+[ INFO @ Sun 2014-09-07 02:20:06 CEST ]: New film added to database. 
+[ INFO @ Sun 2014-09-07 02:20:30 CEST ]: New film added to database. 
+[ INFO @ Sun 2014-09-07 02:21:00 CEST - User: terzo ]: User submitted a new comment 
+[ INFO @ Sun 2014-09-07 02:21:00 CEST ]: New comment added to database. 
+[ INFO @ Sun 2014-09-07 02:21:28 CEST - User: n0t ]: User submitted a new comment 
+[ INFO @ Sun 2014-09-07 02:21:28 CEST ]: New comment added to database. 
+[ INFO @ Sun 2014-09-07 02:21:57 CEST - User: king ]: User submitted a new comment 
+[ INFO @ Sun 2014-09-07 02:21:57 CEST ]: New comment added to database. 
+[ INFO @ Sun 2014-09-07 02:22:19 CEST - User: n0t ]: User voted a comment 
+[ INFO @ Sun 2014-09-07 02:22:34 CEST - User: terzo ]: User voted a comment 
+[ INFO @ Sun 2014-09-07 02:22:42 CEST - User: terzo ]: User voted a comment 
+[ INFO @ Sun 2014-09-07 02:23:07 CEST - User: king ]: User logged in. 
+[ INFO @ Sun 2014-09-07 02:23:26 CEST - User: king ]: User voted a comment 
+[ INFO @ Sun 2014-09-07 02:24:00 CEST ]: Server initalized. 
+[ INFO @ Sun 2014-09-07 02:24:53 CEST ]: Server initalized. 
+[ INFO @ Sun 2014-09-07 02:24:53 CEST ]: Server listening and waiting connections. 
+[ INFO @ Sun 2014-09-07 02:24:58 CEST ]: New thread created 
+[ INFO @ Sun 2014-09-07 02:25:02 CEST - User: king ]: User logged in. 
+[ INFO @ Sun 2014-09-07 02:25:18 CEST - User: king ]: User submitted a new comment 
+[ INFO @ Sun 2014-09-07 02:25:18 CEST ]: New comment added to database. 
+[ INFO @ Sun 2014-09-07 02:25:23 CEST ]: New thread created 
+[ INFO @ Sun 2014-09-07 02:25:31 CEST - User: terzo ]: User logged in. 
+[ INFO @ Sun 2014-09-07 02:25:43 CEST - User: terzo ]: User submitted a new comment 
+[ INFO @ Sun 2014-09-07 02:25:43 CEST ]: New comment added to database. 
+[ INFO @ Sun 2014-09-07 02:25:50 CEST ]: New thread created 
+[ INFO @ Sun 2014-09-07 02:25:55 CEST - User: n0t ]: User logged in. 
+[ INFO @ Sun 2014-09-07 02:26:11 CEST - User: n0t ]: User voted a comment 
+[ INFO @ Sun 2014-09-07 02:26:21 CEST - User: n0t ]: User submitted a new comment 
+[ INFO @ Sun 2014-09-07 02:26:21 CEST ]: New comment added to database. 
+[ INFO @ Sun 2014-09-07 02:26:48 CEST - User: terzo ]: User voted a comment 
+[ INFO @ Sun 2014-09-07 02:27:08 CEST - User: king ]: User voted a comment 
+[ INFO @ Sun 2014-09-07 02:27:15 CEST - User: king ]: User voted a comment 
+[ INFO @ Sun 2014-09-07 14:02:45 CEST ]: Server initalized. 
+[ INFO @ Sun 2014-09-07 14:02:45 CEST ]: Server listening and waiting connections. 
+[ INFO @ Sun 2014-09-07 14:02:49 CEST ]: New thread created 
+[ INFO @ Sun 2014-09-07 14:02:55 CEST - User: terzo ]: User logged in. 
+[ INFO @ Sun 2014-09-07 14:03:04 CEST ]: New thread created 
+[ INFO @ Sun 2014-09-07 14:03:06 CEST - User: king ]: User logged in. 
+[ INFO @ Sun 2014-09-07 14:03:21 CEST ]: New thread created 
+[ INFO @ Sun 2014-09-07 14:03:23 CEST - User: n0t ]: User logged in. 
+[ INFO @ Sun 2014-09-07 14:03:49 CEST - User: n0t ]: User submitted a new comment 
+[ INFO @ Sun 2014-09-07 14:03:49 CEST ]: New comment added to database. 
+[ INFO @ Sun 2014-09-07 14:04:15 CEST - User: terzo ]: User submitted a new comment 
+[ INFO @ Sun 2014-09-07 14:04:15 CEST ]: New comment added to database. 
+[ INFO @ Sun 2014-09-07 14:04:32 CEST - User: terzo ]: User voted a comment 
+[ INFO @ Sun 2014-09-07 14:04:39 CEST - User: terzo ]: User submitted a new comment 
+[ INFO @ Sun 2014-09-07 14:04:39 CEST ]: New comment added to database. 
+[ INFO @ Sun 2014-09-07 14:04:57 CEST - User: king ]: User voted a comment 
+[ INFO @ Sun 2014-09-07 14:05:01 CEST - User: king ]: User voted a comment 
+[ INFO @ Sun 2014-09-07 14:05:10 CEST - User: king ]: User submitted a new comment 
+[ INFO @ Sun 2014-09-07 14:05:10 CEST ]: New comment added to database. 
+[ INFO @ Sun 2014-09-07 14:05:23 CEST - User: n0t ]: User voted a comment 
+[ INFO @ Sun 2014-09-07 14:05:30 CEST - User: n0t ]: User voted a comment 
+[ INFO @ Sun 2014-09-07 14:05:34 CEST - User: n0t ]: User voted a comment 

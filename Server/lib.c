@@ -703,8 +703,7 @@ F_Valutation find_notif(notifications Head, int id){
 }
 
 int show_notifications(User u){
-    if (u->noti_count <=0) return;
-    else if(u->notif==NULL) { u->noti_count = 0; return; }
+    if (u->noti_count <=0 || u->notif==NULL) { u->noti_count=0; return 0; }
     char buffer[MAXBUF];
     char b_aux[129];
     const char c_menu[]="\n 1. Visualizza altri \n 2. Vota Recensione \n 3. Esci \n > ";
