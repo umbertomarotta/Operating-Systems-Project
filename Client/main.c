@@ -51,15 +51,15 @@ void ffflush(){
     return;
 }
 
-//int main(int argc, const char * argv[])
-int main()
+int main(int argc, const char * argv[])
+//int main()
 {
-    //Hardcoded parameters
+/*    //Hardcoded parameters
     int argc = 3;
     char* argv[3];
     argv[2] = "4005";
     argv[1] = "localhost";
-
+*/
     long num;
     int portno;
     struct sockaddr_in sin;

@@ -1,7 +1,7 @@
 #ifndef ServerClient_library_h
 #define ServerClient_library_h
 #include <pthread.h>
-#define MAXBUF 256
+#define MAXBUF 512
 #define MAX_PAGE_BUFF 5
 
 

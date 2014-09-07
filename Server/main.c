@@ -57,6 +57,8 @@ void votedb_init(C_ValutationList *Head, char* title, int id){
 }
 
 void commentdb_init(F_ValutationList *Head, F_Valutation val, char *title){
+    val->CommentScores=NULL;
+    pthread_mutex_init(&val->comm_vote_mutex,NULL);
     if(*Head==NULL){
         *Head=(F_ValutationList)malloc(sizeof(struct F_ValutationList));
         (*Head)->f_valutation=val;
@@ -77,14 +79,17 @@ void filmdb_init(){
     //FilmList ptr = Films;
     int filmfile = open("filmdb", O_RDWR|O_CREAT,S_IRUSR|S_IWUSR);
     struct F_Valutation v;
-    char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
+    //char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
+    char buffer[MAXBUF];
     int filmcomments;    
     F_Valutation val=NULL;
     while(read(filmfile, &f, sizeof(struct Film))){
         Film new_film = (Film)malloc(sizeof(struct Film));
         memcpy(new_film, &f, sizeof(struct Film));
+        pthread_mutex_init(&new_film->val_mutex, NULL);
         F_add_to(new_film);
         sprintf(buffer, "%s.film_comments", new_film->title);
+        new_film->film_valutations=NULL;
         filmcomments=open(buffer, O_RDWR|O_CREAT, S_IRUSR|S_IWUSR);
         while(read(filmcomments, &v, sizeof(struct F_Valutation))){
             val=(F_Valutation)malloc(sizeof(struct F_Valutation));
@@ -118,6 +123,8 @@ void userdb_init(){
             Users=N;
             Users->user->notif=NULL;
         }
+        pthread_mutex_init(&Users->user->u_rate_mutex, NULL);
+        pthread_mutex_init(&Users->user->u_notif_mutex, NULL);
     }
     close(userfile);
 }

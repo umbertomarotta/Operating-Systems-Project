@@ -330,7 +330,8 @@ UserList U_add_to(UserList U, User new_user) {
 }
 
 void add_film(User u){
-    char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
+    //char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
+    char buffer[MAXBUF];
     Film new_film = (Film)malloc(sizeof(struct Film));
     _send(u->fd, " > Insert title: ");
     _recv(u->fd, buffer, 1);
@@ -391,7 +392,8 @@ UserList remove_from(UserList U, User user) {
 
 void show_online_users(User user){
     UserList u = Users;
-    char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
+    //char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
+    char buffer[MAXBUF];
     memset(buffer, '\0', MAXBUF);
     char aux[129];
     bzero(aux, 129);
@@ -414,9 +416,10 @@ void show_online_users(User user){
 }
 
 void show_film(User u){
-    const char f_menu[] = "\n 1. Mostra Commenti \n 2. Aggiungi Film \n 3. Esci \n > ";
+    char *f_menu = "\n 1. Mostra Commenti \n 2. Aggiungi Film \n 3. Esci \n > ";
     FilmList f = Films;
-    char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
+    //char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
+    char buffer[MAXBUF];
     char aux[129];
     memset(buffer, '\0', MAXBUF);
     sprintf(buffer, "\n ## ELENCO FILM ##\n");
@@ -434,11 +437,12 @@ void show_film(User u){
     strcat(buffer, "\nPremi un tasto per continuare... ");
     _send(u->fd, buffer);
     _recv(u->fd, buffer, 1);
+    fprintf(stderr, "%s\n", f_menu);
     int choice;
     do{
-        memset(buffer, '\0', MAXBUF);
-        sprintf(buffer, "\n## RATING SYSTEM MENU > FILM ##\n");
-        strcat(buffer, f_menu);
+        bzero(buffer, MAXBUF);
+        sprintf(buffer, "\n ## RATING SYSTEM MENU > FILM ##\n%s", f_menu);
+        //strcat(buffer, f_menu);
         _send(u->fd, buffer);
         _recv(u->fd, buffer, 1);
         if(DEBAG) printf("REC [%s]\n", buffer);
@@ -483,7 +487,8 @@ void vote_comment(User u, F_Valutation Valutation, char *title){
             _send(u->fd," > You must wait 10 minutes to rate this comment. ");
             return;
         }
-    char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
+    //char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
+    char buffer[MAXBUF];
     int score;
     memset(buffer, '\0', MAXBUF);   
     C_Valutation new_vote = (C_Valutation)malloc(sizeof(struct C_Valutation));
@@ -509,13 +514,14 @@ void vote_comment(User u, F_Valutation Valutation, char *title){
 
 int show_film_valutation(User u, Film f){
     if(!f) return -1;
-    char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
+    //char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
+    char buffer[MAXBUF];
     char b_aux[MAXBUF];
     const char c_menu[]="\n 1. Visualizza altri \n 2. Vota Recensione \n 3. Esci \n > ";
     int i=0;
     F_Valutation choice=NULL;
     bzero(b_aux, MAXBUF);
-    bzero(buffer, 4096);
+    bzero(buffer, MAXBUF);
     F_ValutationList f_val = f->film_valutations;
     sprintf(b_aux, "\n ## COMMENTI DEL FILM %s ##\n", f->title);
     strcat(buffer, b_aux);
@@ -534,7 +540,7 @@ int show_film_valutation(User u, Film f){
             _send(u->fd, buffer);
             _recv(u->fd, buffer, 1);
             if(atoi(buffer)==1){
-                bzero(buffer, 4096);
+                bzero(buffer, MAXBUF);
                 bzero(b_aux, MAXBUF);
                 continue;
             }
@@ -571,7 +577,8 @@ int show_film_valutation(User u, Film f){
 
 void show_f_val(User u){
     int fd = u->fd;
-    char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
+    //char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
+    char buffer[MAXBUF];
     Film f=NULL;
     const char v_menu[]= "\n 1. Commenta Film \n 2. Esci \n > ";
     memset(buffer, '\0', MAXBUF);
@@ -609,14 +616,17 @@ void show_f_val(User u){
 }
 
 void add_val(User u, Film f){
-    char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
+    //char* buffer = (char*)malloc(sizeof(char)*(MAXBUF+1));
+    char buffer[MAXBUF];
     char date[80];
     time_t now = time(NULL);
     struct tm ts = *localtime(&now);
     strftime(date, sizeof(date), "%Y-%m-%d %H:%M", &ts);
     int score;
-    memset(buffer, '\0', MAXBUF);   
+    memset(buffer, '\0', MAXBUF);
+    fprintf(stderr,"è sta malloc che scazza?\n");
     F_Valutation new_val = (F_Valutation)malloc(sizeof(struct F_Valutation));
+    fprintf(stderr, "evidentemente sì\n");
     _send(u->fd, " > Insert Comment: ");
     _recv(u->fd, buffer, 1);
     strcpy(new_val->comment, buffer);
@@ -644,7 +654,9 @@ void add_val(User u, Film f){
 }
 
 void Val_add_to(F_ValutationList *LVal, char *title,  F_Valutation new_val){
-    char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
+    //char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
+    char buffer[MAXBUF];
+    memset(buffer, '\0', MAXBUF);
     sprintf(buffer, "%s.film_comments", title);
     int filmcomments=open(buffer, O_RDWR|O_CREAT|O_APPEND, S_IRUSR|S_IWUSR);
     if(*LVal==NULL){
@@ -664,7 +676,8 @@ void Val_add_to(F_ValutationList *LVal, char *title,  F_Valutation new_val){
 }
 
 void C_Val_add_to(C_ValutationList *CVal, C_Valutation new_vote, int id, char *title){
-    char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
+    //char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
+    char buffer[MAXBUF];
     sprintf(buffer, "%s.%d.rec_vote", title, id);
     int rec_votations=open(buffer, O_RDWR|O_CREAT|O_APPEND, S_IRUSR|S_IWUSR);
     if(*CVal==NULL){
