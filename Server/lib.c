@@ -8,20 +8,79 @@
 #include <unistd.h>
 #include <fcntl.h>
 
+#define DEBAG 1
+
+#define IDLE 0
+#define SENDING 1
+#define RECEIVING 2
+
+int status[5000];
+
 // SAFER SEND AND RECV
-void _send(int fd, const void* buffer) {
+void _send(const int fd, char* buffer) {
     // We will close the connection if the buffer received is lte 0
-    if (send(fd, buffer, strlen((char*)buffer), 0) <= 0) {
-        close(fd);
-        pthread_exit(0);
+    if (status[fd] == SENDING){
+        char trash[MAXBUF+1];
+        if(DEBAG) printf("WAITNG TRASH\n");
+        long char_read = recv(fd, trash, MAXBUF, 0);
+        if(DEBAG) printf("TRASHED\n");
+        if (char_read <= 0){
+            status[fd] = IDLE;
+            close(fd);
+            if(DEBAG) printf("CLOSING\n");
+            //if (buffer) free(buffer);
+            pthread_exit(0);
+        }
     }
+    if(DEBAG) printf("SENDING\n");
+    if (strcmp(buffer, "") == 0){
+        char string[] = "\nNone\n";
+        if (send(fd, string, strlen((char*)string), 0) <= 0) {
+            status[fd] = IDLE;
+            close(fd);
+            if(DEBAG) printf("CLOSING\n");
+            //if (buffer) free(buffer);
+            pthread_exit(0);
+        };
+    }
+    else{
+        if (send(fd, buffer, strlen((char*)buffer), 0) <= 0) {
+            status[fd] = IDLE;
+            close(fd);
+            if(DEBAG) printf("CLOSING\n");
+            //if (buffer) free(buffer);
+            pthread_exit(0);
+        };
+    }
+    if(DEBAG) printf("SENT\n");
+    status[fd] = SENDING;
 }
 
-void _recv(int fd, void* buffer, int be_string) {
+void flush_buffer(char buffer[]){
+    int i;
+    for (i=0; i<MAXBUF+1; i++){
+        buffer[i] = '\0';
+    }
+    return;
+}
+
+void _recv(const int fd, char* buffer, int be_string) {
+    if (status[fd] == RECEIVING){
+        if(DEBAG) printf("SENDING TRASH\n");
+        send(fd, "\0", strlen((char*)"\0"), 0);
+        if(DEBAG) printf("SENT\n");
+    }
+    //_send(fd, "TELLME");
     memset(buffer, 0, MAXBUF);
+    flush_buffer(buffer);
+    if(DEBAG) printf("WAITNG\n");
     long char_read = recv(fd, buffer, MAXBUF, 0);
+    if(DEBAG) printf("GOT [%s]\n", buffer);
     if (char_read <= 0){
+        status[fd] = IDLE;
         close(fd);
+        if(DEBAG) printf("CLOSING\n");
+        //if (buffer) free(buffer);
         pthread_exit(0);
     }
     
@@ -30,11 +89,13 @@ void _recv(int fd, void* buffer, int be_string) {
     if (be_string == 0) {
         ((char*)(buffer))[char_read] = '\0';
     }
+    status[fd] = RECEIVING;
 }
 
 void manage_user(int fd, int registration) {
+    status[fd] = IDLE;
     User user = NULL;
-    char buffer[MAXBUF+1];
+    char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
     if (registration == 1) {
         _info("Serving the registration form.");
         User new_user = (User)malloc(sizeof(struct User));
@@ -137,7 +198,9 @@ void manage_user(int fd, int registration) {
         }
         strcat(notif, menu);
         _send(user->fd, notif);
+        flush_buffer(buffer);
         _recv(user->fd, buffer, 1);
+        printf("REC [%s]\n", buffer);
         while (atoi(buffer) <= 0 || atoi(buffer) > 4) {
             _send(user->fd, " > ");
             _recv(user->fd, buffer, 1);
@@ -161,6 +224,11 @@ void manage_user(int fd, int registration) {
                 update_u_db();
                 return;
                     }
+            case 666: {
+                user->is_on=0;
+                _infoUser("User logged out.", user->username);
+                return;
+            }
             default:
                 break;
         }
@@ -232,6 +300,7 @@ User find_username(UserList U, char *new_user){
 
         }
     }
+    return NULL;
 }
 
 Film find_film(char *f_title){
@@ -261,7 +330,7 @@ UserList U_add_to(UserList U, User new_user) {
 }
 
 void add_film(User u){
-    char buffer[MAXBUF];
+    char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
     Film new_film = (Film)malloc(sizeof(struct Film));
     _send(u->fd, " > Insert title: ");
     _recv(u->fd, buffer, 1);
@@ -322,7 +391,7 @@ UserList remove_from(UserList U, User user) {
 
 void show_online_users(User user){
     UserList u = Users;
-    char buffer[MAXBUF];
+    char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
     memset(buffer, '\0', MAXBUF);
     char aux[129];
     bzero(aux, 129);
@@ -347,7 +416,7 @@ void show_online_users(User user){
 void show_film(User u){
     const char f_menu[] = "\n 1. Mostra Commenti \n 2. Aggiungi Film \n 3. Esci \n > ";
     FilmList f = Films;
-    char buffer[MAXBUF];
+    char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
     char aux[129];
     memset(buffer, '\0', MAXBUF);
     sprintf(buffer, "\n ## ELENCO FILM ##\n");
@@ -372,6 +441,8 @@ void show_film(User u){
         strcat(buffer, f_menu);
         _send(u->fd, buffer);
         _recv(u->fd, buffer, 1);
+        if(DEBAG) printf("REC [%s]\n", buffer);
+        
         while (atoi(buffer) <= 0 || atoi(buffer) > 3) {
             _send(u->fd, " > ");
             _recv(u->fd, buffer, 1);
@@ -412,7 +483,7 @@ void vote_comment(User u, F_Valutation Valutation, char *title){
             _send(u->fd," > You must wait 10 minutes to rate this comment. ");
             return;
         }
-    char buffer[MAXBUF];
+    char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
     int score;
     memset(buffer, '\0', MAXBUF);   
     C_Valutation new_vote = (C_Valutation)malloc(sizeof(struct C_Valutation));
@@ -437,7 +508,8 @@ void vote_comment(User u, F_Valutation Valutation, char *title){
 }
 
 int show_film_valutation(User u, Film f){
-    char buffer[4096];
+    if(!f) return -1;
+    char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
     char b_aux[MAXBUF];
     const char c_menu[]="\n 1. Visualizza altri \n 2. Vota Recensione \n 3. Esci \n > ";
     int i=0;
@@ -498,13 +570,14 @@ int show_film_valutation(User u, Film f){
 
 
 void show_f_val(User u){
-    char buffer[MAXBUF];
+    int fd = u->fd;
+    char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
     Film f=NULL;
     const char v_menu[]= "\n 1. Commenta Film \n 2. Esci \n > ";
     memset(buffer, '\0', MAXBUF);
     do{
-        _send(u->fd, " > Select Title: ");
-        _recv(u->fd, buffer, 1);
+        _send(fd, " > Select Title: ");
+        _recv(fd, buffer, 1);
         f=find_film(buffer);
     }while(f==NULL && strcmp(buffer,":quit")); 
     int choice;
@@ -513,11 +586,11 @@ void show_f_val(User u){
         memset(buffer, '\0', MAXBUF);
         sprintf(buffer, "\n## RATING SYSTEM MENU > FILM > COMMENTI [%s] ##", f->title);
         strcat(buffer, v_menu);
-        _send(u->fd, buffer);
-        _recv(u->fd, buffer, 1);
+        _send(fd, buffer);
+        _recv(fd, buffer, 1);
         while (atoi(buffer) <= 0 || atoi(buffer) > 2) {
-            _send(u->fd, " > ");
-            _recv(u->fd, buffer, 1);
+            _send(fd, " > ");
+            _recv(fd, buffer, 1);
         }
         choice = atoi(buffer);
         switch (choice) {
@@ -536,7 +609,7 @@ void show_f_val(User u){
 }
 
 void add_val(User u, Film f){
-    char buffer[MAXBUF];
+    char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
     char date[80];
     time_t now = time(NULL);
     struct tm ts = *localtime(&now);
@@ -571,7 +644,7 @@ void add_val(User u, Film f){
 }
 
 void Val_add_to(F_ValutationList *LVal, char *title,  F_Valutation new_val){
-    char buffer[MAXBUF];
+    char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
     sprintf(buffer, "%s.film_comments", title);
     int filmcomments=open(buffer, O_RDWR|O_CREAT|O_APPEND, S_IRUSR|S_IWUSR);
     if(*LVal==NULL){
@@ -591,7 +664,7 @@ void Val_add_to(F_ValutationList *LVal, char *title,  F_Valutation new_val){
 }
 
 void C_Val_add_to(C_ValutationList *CVal, C_Valutation new_vote, int id, char *title){
-    char buffer[MAXBUF];
+    char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
     sprintf(buffer, "%s.%d.rec_vote", title, id);
     int rec_votations=open(buffer, O_RDWR|O_CREAT|O_APPEND, S_IRUSR|S_IWUSR);
     if(*CVal==NULL){
