@@ -57,7 +57,7 @@ int main()
     //Hardcoded parameters
     int argc = 3;
     char* argv[3];
-    argv[2] = "4004";
+    argv[2] = "4005";
     argv[1] = "localhost";
 
     long num;

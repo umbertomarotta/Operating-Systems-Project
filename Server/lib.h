@@ -1,7 +1,7 @@
 #ifndef ServerClient_library_h
 #define ServerClient_library_h
 #include <pthread.h>
-#define MAXBUF 1024
+#define MAXBUF 256
 #define MAX_PAGE_BUFF 5
 
 
@@ -101,8 +101,8 @@ extern const char menu[MAXBUF];
 extern int logfile;
 extern User SERVER;
 
-void _send(int fd, const void* buffer);
-void _recv(int fd, char buffer[], int be_string);
+void _send(int fd, char* buffer);
+void _recv(int fd, char* buffer, int be_string);
 int _infoUser(char *buffer, char *user);
 int _info(char *buffer);
 int _error(char *buffer);

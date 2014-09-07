@@ -24,7 +24,7 @@ const char hello[MAXBUF] = "\n## MOVIE RATING SYSTEM ## \n 1. Registrazione \n 2
 
 void votedb_init(C_ValutationList *Head, char* title, int id){
     struct C_Valutation vot;
-    char buffer[MAXBUF];
+    char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
     sprintf(buffer, "%s.%d.rec_vote", title, id);
     int vot_db=open(buffer, O_RDWR|O_CREAT,S_IRUSR|S_IWUSR);
     C_ValutationList ptr = NULL;
@@ -66,7 +66,7 @@ void filmdb_init(){
     //FilmList ptr = Films;
     int filmfile = open("filmdb", O_RDWR|O_CREAT,S_IRUSR|S_IWUSR);
     struct F_Valutation v;
-    char buffer[MAXBUF];
+    char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
     int filmcomments;    
     F_Valutation val=NULL;
     while(read(filmfile, &f, sizeof(struct Film))){
@@ -114,11 +114,12 @@ void userdb_init(){
 void *manage(void *arg) {
     int fd = *(int*) arg;
     _info("New thread created");
-    char buffer[MAXBUF+1];
+    char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
     int choice = 0;
     do {
         // Sending welcome message
-        _send(fd, hello);
+        strcpy(buffer, hello);
+        _send(fd, buffer);
 
         // Give the user a choice
         _recv(fd, buffer, 1);
@@ -139,12 +140,14 @@ void *manage(void *arg) {
                 }
                 break;
             case 3:
+                //if(buffer) free(buffer);
                 close(fd);
                 pthread_exit(0);
             default:
                 break;
         }
     } while (choice > 0 && choice < 4);
+    //if(buffer) free(buffer);
     close(fd);
     pthread_exit(0);
 }
@@ -158,7 +161,7 @@ int main() {
     int argc = 2;
     char* argv[4];
     argv[3] = "logfile.txt";
-    argv[1] = "4004";
+    argv[1] = "4005";
     // Declaring some variables
     int server_socket,
         port_no,
