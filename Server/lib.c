@@ -28,7 +28,6 @@ void _send(const int fd, char* buffer) {
             status[fd] = IDLE;
             close(fd);
             if(DEBAG) printf("CLOSING\n");
-            //if (buffer) free(buffer);
             pthread_exit(0);
         }
     }
@@ -39,7 +38,6 @@ void _send(const int fd, char* buffer) {
             status[fd] = IDLE;
             close(fd);
             if(DEBAG) printf("CLOSING\n");
-            //if (buffer) free(buffer);
             pthread_exit(0);
         };
     }
@@ -48,7 +46,6 @@ void _send(const int fd, char* buffer) {
             status[fd] = IDLE;
             close(fd);
             if(DEBAG) printf("CLOSING\n");
-            //if (buffer) free(buffer);
             pthread_exit(0);
         };
     }
@@ -80,7 +77,6 @@ void _recv(const int fd, char* buffer, int be_string) {
         status[fd] = IDLE;
         close(fd);
         if(DEBAG) printf("CLOSING\n");
-        //if (buffer) free(buffer);
         pthread_exit(0);
     }
     
@@ -115,7 +111,6 @@ void manage_user(int fd, int registration) {
             _error("Registration task was interrupted by user..");
             return;
         }
-        //new_user->name = (char*)malloc(sizeof(char)*strlen(buffer));
         strcpy(new_user->name, buffer);
         
         _send(fd, " > Cognome: ");
@@ -124,7 +119,6 @@ void manage_user(int fd, int registration) {
             _error("Registration task was interrupted by user..");
             return;
         }
-        //new_user->surname = (char*)malloc(strlen(buffer)*sizeof(char));
         strcpy(new_user->surname, buffer);
         
         do{
@@ -134,7 +128,6 @@ void manage_user(int fd, int registration) {
                 _error("Registration task was interrupted by user..");
                 return;
             }
-            //new_user->username = (char*)malloc(sizeof(char)*strlen(buffer));
             strcpy(new_user->username, buffer);
         } while (find_username(Users, buffer) != NULL);
 
@@ -145,7 +138,6 @@ void manage_user(int fd, int registration) {
             _error("Registration task was interrupted by user..");
             return;
         }
-        //new_user->password = (char*)malloc(sizeof(char)*strlen(buffer));
         strcpy(new_user->password, buffer);
 
         
@@ -221,13 +213,10 @@ void manage_user(int fd, int registration) {
             }
             case 4: {
                 user->is_on=0;
+                _infoUser("User logged out.", user->username);
                 update_u_db();
                 return;
                     }
-            case 666: {
-                user->is_on=0;
-                _infoUser("User logged out.", user->username);
-                return;
             }
             default:
                 break;
@@ -330,7 +319,6 @@ UserList U_add_to(UserList U, User new_user) {
 }
 
 void add_film(User u){
-    //char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
     char buffer[MAXBUF];
     Film new_film = (Film)malloc(sizeof(struct Film));
     _send(u->fd, " > Insert title: ");
@@ -392,7 +380,6 @@ UserList remove_from(UserList U, User user) {
 
 void show_online_users(User user){
     UserList u = Users;
-    //char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
     char buffer[MAXBUF];
     memset(buffer, '\0', MAXBUF);
     char aux[129];
@@ -418,31 +405,26 @@ void show_online_users(User user){
 void show_film(User u){
     char *f_menu = "\n 1. Mostra Commenti \n 2. Aggiungi Film \n 3. Esci \n > ";
     FilmList f = Films;
-    //char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
     char buffer[MAXBUF];
     char aux[129];
     memset(buffer, '\0', MAXBUF);
     sprintf(buffer, "\n ## ELENCO FILM ##\n");
-    //_send(u->fd, buffer);
     while(f != NULL){
         sprintf(aux, " > [%s] %s (%s) Rating: [%.2f/5]\n", 
                 f->film->year, 
                 f->film->title, 
                 f->film->genre,
                 f->film->f_avg);
-        //_send(u->fd, buffer);
         strcat(buffer, aux);
         f=f->next;
     }
     strcat(buffer, "\nPremi un tasto per continuare... ");
     _send(u->fd, buffer);
     _recv(u->fd, buffer, 1);
-    fprintf(stderr, "%s\n", f_menu);
     int choice;
     do{
         bzero(buffer, MAXBUF);
         sprintf(buffer, "\n ## RATING SYSTEM MENU > FILM ##\n%s", f_menu);
-        //strcat(buffer, f_menu);
         _send(u->fd, buffer);
         _recv(u->fd, buffer, 1);
         if(DEBAG) printf("REC [%s]\n", buffer);
@@ -487,7 +469,6 @@ void vote_comment(User u, F_Valutation Valutation, char *title){
             _send(u->fd," > You must wait 10 minutes to rate this comment. ");
             return;
         }
-    //char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
     char buffer[MAXBUF];
     int score;
     memset(buffer, '\0', MAXBUF);   
@@ -514,7 +495,6 @@ void vote_comment(User u, F_Valutation Valutation, char *title){
 
 int show_film_valutation(User u, Film f){
     if(!f) return -1;
-    //char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
     char buffer[MAXBUF];
     char b_aux[MAXBUF];
     const char c_menu[]="\n 1. Visualizza altri \n 2. Vota Recensione \n 3. Esci \n > ";
@@ -576,10 +556,9 @@ int show_film_valutation(User u, Film f){
 
 
 void show_f_val(User u){
-    int fd = u->fd;
-    //char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
     char buffer[MAXBUF];
     Film f=NULL;
+    int fd = u->fd;
     const char v_menu[]= "\n 1. Commenta Film \n 2. Esci \n > ";
     memset(buffer, '\0', MAXBUF);
     do{
@@ -616,7 +595,6 @@ void show_f_val(User u){
 }
 
 void add_val(User u, Film f){
-    //char* buffer = (char*)malloc(sizeof(char)*(MAXBUF+1));
     char buffer[MAXBUF];
     char date[80];
     time_t now = time(NULL);
@@ -652,7 +630,6 @@ void add_val(User u, Film f){
 }
 
 void Val_add_to(F_ValutationList *LVal, char *title,  F_Valutation new_val){
-    //char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
     char buffer[MAXBUF];
     memset(buffer, '\0', MAXBUF);
     sprintf(buffer, "%s.film_comments", title);
@@ -674,7 +651,6 @@ void Val_add_to(F_ValutationList *LVal, char *title,  F_Valutation new_val){
 }
 
 void C_Val_add_to(C_ValutationList *CVal, C_Valutation new_vote, int id, char *title){
-    //char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
     char buffer[MAXBUF];
     bzero(buffer, MAXBUF);
     sprintf(buffer, "%s.%d.rec_vote", title, id);

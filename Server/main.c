@@ -22,16 +22,6 @@ User SERVER;
 const char menu[MAXBUF] = "\n 1. Visualizza utenti online \n 2. Visualizza elenco film \n 3. Visualizza Notifiche \n 4. Esci \n > ";
 const char hello[MAXBUF] = "\n## MOVIE RATING SYSTEM ## \n 1. Registrazione \n 2. Login \n 3. Esci \n > ";
 
-void clean_quit(int sig){
-    UserList ptr = Users;
-    fprintf(stderr, "Caught signal %d. \n Closing all Connections..\n", sig);
-    while(ptr!=NULL){
-        ptr->user->is_on=0;
-        //close(ptr->user->fd);
-    }
-    //update_u_db();
-    exit(1);
-}
 
 void votedb_init(C_ValutationList *Head, char* title, int id){
     struct C_Valutation vot;
@@ -76,10 +66,8 @@ void commentdb_init(F_ValutationList *Head, F_Valutation val, char *title){
 
 void filmdb_init(){
     struct Film f;
-    //FilmList ptr = Films;
     int filmfile = open("filmdb", O_RDWR|O_CREAT,S_IRUSR|S_IWUSR);
     struct F_Valutation v;
-    //char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
     char buffer[MAXBUF];
     int filmcomments;    
     F_Valutation val=NULL;
@@ -107,7 +95,6 @@ void filmdb_init(){
 void userdb_init(){
     struct User u;
     int userfile = open("userdb", O_RDWR|O_CREAT|O_APPEND,S_IRUSR|S_IWUSR);
-    //UserList ptr = NULL;
     while(read(userfile, &u, sizeof(struct User))){
         if(Users == NULL) {
             Users = (UserList)malloc(sizeof(struct UserList));
@@ -160,29 +147,27 @@ void *manage(void *arg) {
                 }
                 break;
             case 3:
-                //if(buffer) free(buffer);
                 close(fd);
                 pthread_exit(0);
             default:
                 break;
         }
     } while (choice > 0 && choice < 4);
-    //if(buffer) free(buffer);
     close(fd);
     pthread_exit(0);
 }
 
 
 // Main Function
-//int main(int argc, const char * argv[]) {
-int main() {
+int main(int argc, const char * argv[]) {
+//int main() {
 
     //Hardcoded parameters
-    int argc = 2;
+/*    int argc = 2;
     char* argv[4];
     argv[3] = "logfile.txt";
     argv[1] = "4005";
-    // Declaring some variables
+  */  // Declaring some variables
     int server_socket,
         port_no,
         client_addr_len,
@@ -234,7 +219,6 @@ int main() {
 
     // Ignore SIGPIPE is always good
     signal(SIGPIPE, SIG_IGN);
-    //signal(SIGINT, clean_quit);
 
     client_addr_len = sizeof(client);
 

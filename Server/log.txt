@@ -1646,3 +1646,17 @@
 [ INFO @ Sun 2014-09-07 19:34:10 CEST - User: king ]: User logged in. 
 [ INFO @ Sun 2014-09-07 19:34:24 CEST - User: n0t ]: User submitted a new comment 
 [ INFO @ Sun 2014-09-07 19:34:24 CEST ]: New comment added to database. 
+[ INFO @ Mon 2014-09-08 12:27:30 CEST ]: Server initalized. 
+[ INFO @ Mon 2014-09-08 12:27:30 CEST ]: Server listening and waiting connections. 
+[ INFO @ Mon 2014-09-08 12:27:48 CEST ]: New thread created 
+[ INFO @ Mon 2014-09-08 12:27:51 CEST - User: n0t ]: User logged in. 
+[ INFO @ Mon 2014-09-08 12:28:25 CEST - User: n0t ]: User voted a comment 
+[ INFO @ Mon 2014-09-08 12:28:40 CEST - User: n0t ]: User submitted a new comment 
+[ INFO @ Mon 2014-09-08 12:28:40 CEST ]: New comment added to database. 
+[ INFO @ Mon 2014-09-08 12:29:05 CEST ]: New thread created 
+[ INFO @ Mon 2014-09-08 12:29:09 CEST - User: king ]: User logged in. 
+[ INFO @ Mon 2014-09-08 12:30:10 CEST - User: n0t ]: User submitted a new comment 
+[ INFO @ Mon 2014-09-08 12:30:10 CEST ]: New comment added to database. 
+[ INFO @ Mon 2014-09-08 12:30:22 CEST - User: king ]: User logged in. 
+[ INFO @ Mon 2014-09-08 12:30:43 CEST - User: king ]: User voted a comment 
+[ INFO @ Mon 2014-09-08 12:30:51 CEST - User: king ]: User voted a comment 
