@@ -216,8 +216,8 @@ void manage_user(int fd, int registration) {
                 _infoUser("User logged out.", user->username);
                 update_u_db();
                 return;
-                    }
             }
+            break;
             default:
                 break;
         }
