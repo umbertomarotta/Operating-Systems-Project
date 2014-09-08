@@ -624,9 +624,7 @@ void add_val(User u, Film f){
     strftime(date, sizeof(date), "%Y-%m-%d %H:%M", &ts);
     int score;
     memset(buffer, '\0', MAXBUF);
-    fprintf(stderr,"è sta malloc che scazza?\n");
     F_Valutation new_val = (F_Valutation)malloc(sizeof(struct F_Valutation));
-    fprintf(stderr, "evidentemente sì\n");
     _send(u->fd, " > Insert Comment: ");
     _recv(u->fd, buffer, 1);
     strcpy(new_val->comment, buffer);
@@ -678,6 +676,7 @@ void Val_add_to(F_ValutationList *LVal, char *title,  F_Valutation new_val){
 void C_Val_add_to(C_ValutationList *CVal, C_Valutation new_vote, int id, char *title){
     //char* buffer = (char*)malloc(sizeof(char)*MAXBUF+1);
     char buffer[MAXBUF];
+    bzero(buffer, MAXBUF);
     sprintf(buffer, "%s.%d.rec_vote", title, id);
     int rec_votations=open(buffer, O_RDWR|O_CREAT|O_APPEND, S_IRUSR|S_IWUSR);
     if(*CVal==NULL){

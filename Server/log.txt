@@ -1595,3 +1595,54 @@
 [ INFO @ Sun 2014-09-07 17:47:36 CEST ]: New comment added to database. 
 [ INFO @ Sun 2014-09-07 17:47:49 CEST - User: n0t ]: User voted a comment 
 [ INFO @ Sun 2014-09-07 17:48:01 CEST - User: n0t ]: User voted a comment 
+[ INFO @ Sun 2014-09-07 18:11:07 CEST ]: Server initalized. 
+[ INFO @ Sun 2014-09-07 18:11:07 CEST ]: Server listening and waiting connections. 
+[ INFO @ Sun 2014-09-07 18:11:57 CEST ]: New thread created 
+[ INFO @ Sun 2014-09-07 18:12:02 CEST - User: n0t ]: User logged in. 
+[ INFO @ Sun 2014-09-07 18:13:06 CEST ]: New thread created 
+[ INFO @ Sun 2014-09-07 18:13:21 CEST - User: king ]: User logged in. 
+[ INFO @ Sun 2014-09-07 18:13:50 CEST - User: king ]: User voted a comment 
+[ INFO @ Sun 2014-09-07 18:14:09 CEST - User: n0t ]: User submitted a new comment 
+[ INFO @ Sun 2014-09-07 18:14:09 CEST ]: New comment added to database. 
+[ INFO @ Sun 2014-09-07 18:15:58 CEST ]: New film added to database. 
+[ INFO @ Sun 2014-09-07 18:16:22 CEST ]: New thread created 
+[ INFO @ Sun 2014-09-07 18:16:25 CEST - User: n0t ]: User logged in. 
+[ INFO @ Sun 2014-09-07 18:16:39 CEST - User: king ]: User voted a comment 
+[ INFO @ Sun 2014-09-07 18:17:12 CEST ]: Serving the registration form. 
+[ INFO @ Sun 2014-09-07 18:17:35 CEST - User: MinchiaMen ]: New user created. 
+[ INFO @ Sun 2014-09-07 18:17:35 CEST - User: MinchiaMen ]: User logged in. 
+[ INFO @ Sun 2014-09-07 18:18:10 CEST - User: n0t ]: User voted a comment 
+[ INFO @ Sun 2014-09-07 18:18:14 CEST - User: n0t ]: User voted a comment 
+[ INFO @ Sun 2014-09-07 18:18:27 CEST ]: New film added to database. 
+[ INFO @ Sun 2014-09-07 18:18:45 CEST ]: New thread created 
+[ INFO @ Sun 2014-09-07 18:18:47 CEST - User: n0t ]: User logged in. 
+[ INFO @ Sun 2014-09-07 18:19:15 CEST - User: n0t ]: User submitted a new comment 
+[ INFO @ Sun 2014-09-07 18:19:15 CEST ]: New comment added to database. 
+[ INFO @ Sun 2014-09-07 18:19:22 CEST - User: MinchiaMen ]: User submitted a new comment 
+[ INFO @ Sun 2014-09-07 18:19:22 CEST ]: New comment added to database. 
+[ INFO @ Sun 2014-09-07 18:19:35 CEST - User: MinchiaMen ]: User voted a comment 
+[ INFO @ Sun 2014-09-07 18:19:49 CEST ]: New thread created 
+[ INFO @ Sun 2014-09-07 18:19:51 CEST - User: n0t ]: User logged in. 
+[ INFO @ Sun 2014-09-07 18:20:26 CEST - User: n0t ]: User voted a comment 
+[ INFO @ Sun 2014-09-07 18:20:38 CEST - User: king ]: User logged in. 
+[ INFO @ Sun 2014-09-07 18:20:48 CEST - User: n0t ]: User submitted a new comment 
+[ INFO @ Sun 2014-09-07 18:20:48 CEST ]: New comment added to database. 
+[ INFO @ Sun 2014-09-07 18:22:45 CEST - User: king ]: User submitted a new comment 
+[ INFO @ Sun 2014-09-07 18:22:45 CEST ]: New comment added to database. 
+[ INFO @ Sun 2014-09-07 18:23:22 CEST - User: n0t ]: User voted a comment 
+[ INFO @ Sun 2014-09-07 18:24:16 CEST - User: n0t ]: User submitted a new comment 
+[ INFO @ Sun 2014-09-07 18:24:16 CEST ]: New comment added to database. 
+[ INFO @ Sun 2014-09-07 19:12:28 CEST ]: Server initalized. 
+[ INFO @ Sun 2014-09-07 19:12:28 CEST ]: Server listening and waiting connections. 
+[ INFO @ Sun 2014-09-07 19:12:34 CEST ]: New thread created 
+[ INFO @ Sun 2014-09-07 19:13:13 CEST - User: n0t ]: User logged in. 
+[ INFO @ Sun 2014-09-07 19:13:51 CEST - User: n0t ]: User voted a comment 
+[ INFO @ Sun 2014-09-07 19:32:59 CEST ]: Server initalized. 
+[ INFO @ Sun 2014-09-07 19:32:59 CEST ]: Server listening and waiting connections. 
+[ INFO @ Sun 2014-09-07 19:33:06 CEST ]: New thread created 
+[ INFO @ Sun 2014-09-07 19:33:10 CEST - User: n0t ]: User logged in. 
+[ INFO @ Sun 2014-09-07 19:33:39 CEST - User: n0t ]: User voted a comment 
+[ INFO @ Sun 2014-09-07 19:34:05 CEST ]: New thread created 
+[ INFO @ Sun 2014-09-07 19:34:10 CEST - User: king ]: User logged in. 
+[ INFO @ Sun 2014-09-07 19:34:24 CEST - User: n0t ]: User submitted a new comment 
+[ INFO @ Sun 2014-09-07 19:34:24 CEST ]: New comment added to database. 
